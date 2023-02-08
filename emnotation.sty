@@ -1,0 +1,135 @@
+\NeedsTeXFormat{LaTeX2e}[1994/06/01]
+\ProvidesPackage{emnotation}[2023/01/17 Latex Homework]
+
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{esvect}
+\usepackage{physics}
+\usepackage{bm}
+\usepackage{surround}
+
+\makeatletter
+\newcommand{\oast}{\mathbin{\mathpalette\make@circled\ast}}
+\newcommand{\make@circled}[2]{%
+  \ooalign{$\m@th#1\smallbigcirc{#1}$\cr\hidewidth$\m@th#1#2$\hidewidth\cr}%
+}
+\newcommand{\smallbigcirc}[1]{%
+  \vcenter{\hbox{\scalebox{0.77778}{$\m@th#1\bigcirc$}}}%
+}
+\makeatother
+
+% Logic
+
+\newcommand{\contra}{\Rightarrow\!\Leftarrow}
+
+% Sets
+
+\newcommand{\nullset}{\text{\O}}
+\newcommand{\cont}{\mathcal{C}}
+\newcommand{\holo}{\mathcal{H}}
+\newcommand{\overbar}[1]{\mkern 1.5mu\overline{\mkern-1.5mu#1\mkern-1.5mu}\mkern 1.5mu}
+\newcommand{\interior}[1]{\mathring{#1}}
+
+\newcommand{\SO}{\mathrm{SO}}
+\newcommand{\SE}{\mathrm{SE}}
+
+% Useful functions
+\renewcommand{\deg}[1]{\mathrm{deg}\prn{#1}}  % Lebesgue measure of a set
+
+\DeclareMathOperator*{\argmax}{argmax}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\clamp}{clamp}
+\newcommand{\ceil}[1]{\left\lceil#1\right\rceil}
+\newcommand{\floor}[1]{\left\lfloor#1\right\rfloor}
+\renewcommand{\abs}[1]{\left|#1\right|}
+\renewcommand{\norm}[1]{\lVert#1\rVert}
+\newcommand{\sgn}{\mathrm{sgn}}
+\newcommand{\vol}{\mathrm{vol}}  % Lebesgue measure of a set
+\newcommand{\I}{\mathcal{I}}  % Identity operator
+
+
+\renewcommand{\Re}[1]{\mathfrak{R}\brc{#1}}
+\renewcommand{\Im}[1]{\mathfrak{I}\brc{#1}}
+
+\newcommand{\Arg}{\mathrm{Arg}}
+
+\newcommand{\IF}{\textrm{ if }}
+
+% Probability
+
+% Calculus
+\newcommand{\intlim}[2]{\displaystyle{\int\limits_{#1}^{#2}} \textstyle}
+\newcommand{\intset}[1]{\displaystyle{\int\limits_{#1}} \textstyle}
+%\newcommand{\eval}[1]{\left. #1 \right|}
+
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\A}{\mathcal{A}}
+\newcommand{\deriv}[2]{\frac{\mathrm{d^{#2}}}{\mathrm{d}#1^{#2}}}
+\newcommand{\pderiv}[2]{\frac{\partial}{\partial #1^{#2}}}
+\renewcommand{\d}{\mathrm{d}}
+
+% Signals and Systems
+
+\renewcommand{\L}{\mathcal{L}}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\Z}{\mathcal{Z}}
+
+\newcommand{\rect}{\mathrm{rect}}
+\newcommand{\relu}{\mathrm{relu}}
+\newcommand{\tri}{\mathrm{tri}}
+\newcommand{\sinc}{\mathrm{sinc}}
+\newcommand{\Sa}{\mathrm{Sa}}
+\newcommand{\diric}{\mathrm{diric}}
+
+\DeclareFontFamily{U}{wncy}{}
+\DeclareFontShape{U}{wncy}{m}{n}{<->wncyr10}{}
+\DeclareSymbolFont{mcy}{U}{wncy}{m}{n}
+\DeclareMathSymbol{\sha}{\mathord}{mcy}{"58}
+
+% Linear algebra
+
+\makeatletter
+\renewcommand*\env@matrix[1][*\c@MaxMatrixCols c]{%
+  \hskip -\arraycolsep
+  \let\@ifnextchar\new@ifnextchar
+  \array{#1}}
+\makeatother
+
+
+\renewcommand{\det}[1]{\mathrm{det}\prn{#1}}
+
+\newcommand{\charc}[1]{\chi_{_{#1}}}
+\newcommand{\minpoly}[1]{\mu_{_{#1}}}
+\newcommand{\geom}[1]{\gamma_{_{#1}}}
+\newcommand{\alg}[1]{\alpha_{_{#1}}}
+\newcommand{\spec}[1]{\Lambda\prn{#1}}
+
+\newcommand{\diag}[1]{\mathrm{diag}\brc{#1}}
+\renewcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand{\innerprod}[1]{\left\langle#1\right\rangle}
+
+\newcommand{\vect}[1]{\vv{\bm{#1}}}
+\newcommand{\uvect}[1]{\vu{\bm{#1}}}
+\newcommand{\pt}[1]{\bm{#1}}
+
+\newcommand*{\T}{{\mkern-1.5mu\mathsf{T}}}
+\renewcommand*{\H}{{\mkern-1.5mu\mathsf{H}}}
+
+%\newcommand{\tr}{\mathrm{tr}}
+\newcommand{\Dim}{\mathrm{dim}}
+\newcommand{\Span}{\mathrm{span}}
+\newcommand{\Null}{\mathrm{null}}
+\newcommand{\img}{\mathrm{img}}
+\newcommand{\Rank}{\mathrm{rank}}
+\newcommand{\nullity}{\mathrm{nullity}}
+
+% Probability commands: Expectation, Variance, Covariance, Bias
+%\newcommand{\erf}{\mathrm{erf}}
+\newcommand{\Prb}{\mathrm{P}}
+\newcommand{\E}{\mathrm{E}}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+
