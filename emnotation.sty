@@ -99,7 +99,12 @@
 \makeatother
 
 
+\renewcommand{\tr}[1]{\mathrm{tr}\prn{#1}}
 \renewcommand{\det}[1]{\mathrm{det}\prn{#1}}
+\newcommand{\adj}[1]{\mathrm{adj}\prn{#1}}
+
+\newcommand{\kronsum}{\mathbin{\hat{\oplus}}}
+\newcommand{\kronprod}{\mathbin{\hat{\otimes}}}
 
 \newcommand{\charc}[1]{\chi_{_{#1}}}
 \newcommand{\minpoly}[1]{\mu_{_{#1}}}
@@ -111,20 +116,20 @@
 \renewcommand{\norm}[1]{\left\lVert#1\right\rVert}
 \newcommand{\innerprod}[1]{\left\langle#1\right\rangle}
 
-\newcommand{\vect}[1]{\vv{\bm{#1}}}
-\newcommand{\uvect}[1]{\vu{\bm{#1}}}
+\newcommand{\vect}[1]{\mathbf{#1}}
+\newcommand{\uvect}[1]{\vu{\mathbf{#1}}}
 \newcommand{\pt}[1]{\bm{#1}}
 
 \newcommand*{\T}{{\mkern-1.5mu\mathsf{T}}}
 \renewcommand*{\H}{{\mkern-1.5mu\mathsf{H}}}
 
 %\newcommand{\tr}{\mathrm{tr}}
-\newcommand{\Dim}{\mathrm{dim}}
-\newcommand{\Span}{\mathrm{span}}
-\newcommand{\Null}{\mathrm{null}}
-\newcommand{\img}{\mathrm{img}}
-\newcommand{\Rank}{\mathrm{rank}}
-\newcommand{\nullity}{\mathrm{nullity}}
+\newcommand{\Dim}[1]{\mathrm{dim}\prn{#1}}
+\newcommand{\Span}[1]{\mathrm{span}\prn{#1}}
+\newcommand{\Null}[1]{\mathrm{null}\prn{#1}}
+\newcommand{\img}[1]{\mathrm{img}\prn{#1}}
+\newcommand{\Rank}[1]{\mathrm{rank}\prn{#1}}
+\newcommand{\nullity}[1]{\mathrm{nullity}\prn{#1}}
 
 % Probability commands: Expectation, Variance, Covariance, Bias
 %\newcommand{\erf}{\mathrm{erf}}
