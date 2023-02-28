@@ -25,7 +25,6 @@
 # *.pdf
 
 ## Generated if empty string is given at "Please type another file name for output:"
-.pdf
 
 ## Bibliography auxiliary files (bibtex/biblatex/biber):
 *.bbl
@@ -467,5 +466,5 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
-Discrete-Time Signal Processing (3rd Edition) ( PDFDrive ).pdf 
+Discrete-Time Signal Processing (3rd Edition) ( PDFDrive ).pdf
 Discrete-Time Signal Processing, Solution manual ( PDFDrive ).pdf

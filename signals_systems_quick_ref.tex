@@ -47,7 +47,7 @@
 \linespread{1.1}
 
 \title{Signals and Systems Quick Reference \\ Revision 0.3}
-\author{Emmy Chow}
+\author{Emmy Chow \\ "Make Math Make Sense Again"}
 \date{}
 
 \begin{document}
@@ -641,6 +641,7 @@
   \end{bmatrix}\)
 
   \textbf{The Real Jordan Form}
+  \label{Real-Jordan-Form}
 
   This is a quick summary of the proof presented by
   \href{https://math.stackexchange.com/questions/769312/proof-for-real-jordan-canonical-form}{this} Stack Exchange thread.
@@ -882,7 +883,7 @@
 
   \textbf{Lemma:}
 
-  \(\bm{A} = \bm{A}_s + \bm{A}_s\) where \(\bm{A}_s^\T = \bm{A}_s\) and \(\bm{A}_k^\T = -\bm{A}_k\)
+  \(\bm{A} = \bm{A}_s + \bm{A}_k\) where \(\bm{A}_s^\T = \bm{A}_s\) and \(\bm{A}_k^\T = -\bm{A}_k\)
 
   \textbf{Proof}
 
@@ -1138,6 +1139,7 @@
   Some authors use \(\vect{q}\) instead of \(\vect{x}\)
 
   \subsubsection{State Space Coordinate Systems}
+  \label{state-space-coord}
 
   The state space representation is not unique. It is dependent on your choice of state variables.
   The choice of state variables can be seen as a choice made on the coordinates of the state space.
@@ -1377,7 +1379,7 @@
   \(\bm{C}_o = \vect{e}_{\nu}^\T\),
   \(\bm{D}_o = d\)
 
-  Astute readers may notice that \(\bm{A}_o\) is the matrix representation of the minimal polynomial. See
+  Astute readers may notice that \(\bm{A}_o\) is the companion matrix. See
   \href{https://www.math.tamu.edu/~dallen/m640_03c/lectures/chapter8.pdf}{Texas A \& M Chapter 8 Jordan Normal Form Theorem 8.1.2}
   on page 222.
 
@@ -1392,7 +1394,7 @@
   (termwise for the matrix).
 
   \(\bm{\alpha}(s) = \displaystyle \sum_{k = 0}^{\nu} s^k\bm{\alpha}_k\),
-  \(\ \ \bm{\beta}(s) = \displaystyle \sum_{k = 0}^{\nu - 1} s^k\bm{\beta}_k\) where \(\nu = \deg{q(s)}\)
+  \(\ \ \bm{\beta}(s) = \displaystyle \sum_{k = 0}^{\nu - 1} s^k\bm{\beta}_k\) where \(\nu = \deg{\alpha(s)}\)
 
   \textbf{Controllable Cannonical Form (CCF)}
 
@@ -1430,7 +1432,7 @@
     0 & 0 & \dots & \bm{I}_m & -\bm{\alpha}_{\nu - 1} \\
   \end{bmatrix}\),
   \(\bm{B}_o = \begin{bmatrix} \bm{\beta}_0 \\ \vdots \\ \bm{\beta}_{\nu - 1}\end{bmatrix}\),
-  \(\bm{C}_0 =
+  \(\bm{C}_o =
   \begin{bmatrix}
     0 & \dots & 0 & \bm{I}_m
   \end{bmatrix}\),
@@ -1445,6 +1447,1092 @@
   \(\bm{C}_o = \bm{B}_c^\T\)
 
   \(\bm{D}_o = \bm{D}_c^\T\)
+
+  \pagebreak
+
+  \subsection{Equilibria and Stability}
+
+  \subsubsection{Definition of Equilibrium State}
+
+  Suppose a system is given by the state space representation:
+
+  \(\dot{\vect{x}} = \vect{f}(\vect{x}, \vect{u})\)
+
+  The system stops evolving when \(\vect{f}(\vect{x}, \vect{u}) = \vect{0}\). This corresponds to the
+  nullspace of \(\vect{f}\). We call elements of the nullspace \((\vect{x}_{\textrm{eq}},\, \vect{u}_{\textrm{eq}})\)
+  equilbrium states.
+
+  If an equilibrium has \(\vect{u}_{\textrm{eq}} = \vect{0}\), we categorize it as an unforced equilibrium.
+
+  If an equilibrium has \(\vect{u}_{\textrm{eq}} \neq \vect{0}\), we categorize it as a forced equilibrium.
+
+  \subsubsection{Equilibria of LTI Systems}
+
+  Now consider a LTI system given by:
+
+  \(\dot{\vect{x}} = \bm{A}\vect{x} + \bm{B}\vect{u}\)
+
+  We can see that unforced equilibria are given by \(\Null{\bm{A}}\).
+
+  \subsubsection{Stability of LTI Systems}
+
+  Unlike nonlinear systems, we can infer global behavior of an LTI system from their eigenvalues. For this
+  reason, we can simply talk about the stability of an LTI system rather than stability around equilibria.
+  The classification of LTI systems is summarized below.
+
+  \begin{tabular}{c|c}
+    Classification & Condition on \lambda \in \spec{} \\
+    \hline
+    Globally Exponentialy Stable & \(\Re{\lambda} < 0\) \\
+    Marginally Stable & \(\Re{\lambda} \le 0\) and no \(\lambda\) is defective \\
+    (Marginally) Unstable & \(\Re{\lambda} \le 0\) and a \(\lambda = 0\) is defective \\
+    Unstable & \(\exists \lambda : \Re{\lambda} > 0\) \\
+  \end{tabular}
+
+  \subsubsection{Classification of Equilibria}
+
+  For nonlinear systems, infering global behavior can be complicated. We instead focus on behavior about equilibria.
+  Not all equalibria are created equal. Some equilibria are stable and others are unstable. States around
+  unstable equilibria are repelled. Stable equilibria do not repel states. Depending on your definition,
+  stable equilibria may be strictly attractive or simply neither attract nor repel.
+
+  In order to classify equilibria, we linearize the system about a particular equilibrium as a
+  Jacobian matrix and then analyze its eigenvalues. We summarize the classification in the table below.
+
+  \vspace{12pt}
+
+  \begin{tabular}{c|c}
+    Classification & Condition on \lambda \in \spec{\bkt{\D f(\vect{x}_{\textrm{eq}})}} \\
+    \hline
+    (Locally) Asymptotically Stable & \(\Re{\lambda} < 0\) \\
+    Unstable & \(\exists \lambda : \Re{\lambda} > 0\) \\
+    Inconclusive & \(\Re{\lambda} \le 0\) and \(\exists \lambda : \lambda = 0\) \\
+  \end{tabular}
+
+  \pagebreak
+
+  \subsubsection{Lyapanov Stability}
+
+  Let \(\vect{x}_{\textrm{eq}} : \vect{f}(\vect{x}_{\textrm{eq}}) = \vect{0}\)
+
+  The system defined by \(\vect{f}\) is said to be Lyapanov stable about \(\vect{x}_{\textrm{eq}}\) iff:
+
+  \(\forall \epsilon > 0,\ \exists \delta > 0 :
+  \(\norm{\vect{x}_0 - \vect{x}_{\textrm{eq}}} < \delta \implies \norm{\vect{x}(t) - \vect{x}_{\textrm{eq}}} < \epsilon\)
+
+  Presented below is a diagram of showing parts of the definition
+
+  \includegraphics[scale=0.5]{graphics/precise_stability.png}
+
+  \subsubsection{Asymptotic Stability and Exponential Stability}
+
+  The system defined by \(\vect{f}\) is said to be asymptotically stable about \(\vect{x}_{\textrm{eq}}\) iff:
+
+  \(\forall \epsilon > 0,\ \exists \delta > 0 :
+  \(\norm{\vect{x}_0 - \vect{x}_{\textrm{eq}}} < \delta \implies \displaystyle
+  \lim_{t \to \infty}\norm{\vect{x}(t) - \vect{x}_{\textrm{eq}}} = 0\)
+
+  \textbf{Exponentially Stable}
+
+  A special type of asymptotic stability is exponential stability.
+
+  The system defined by \(\vect{f}\) is said to be exponentially stable about \(\vect{x}_{\textrm{eq}}\) iff:
+
+  \(\forall \epsilon > 0,\ \exists \delta > 0 :
+  \(\norm{\vect{x}_0 - \vect{x}_{\textrm{eq}}} < \delta \implies \displaystyle
+  \norm{\vect{x}(t) - \vect{x}_{\textrm{eq}}} \le \alpha\norm{\vect{x}_0 - \vect{x}_{\textrm{eq}}}e^{-\beta t}\)
+
+  \subsubsection{Diagram of Stability Types}
+
+  \includegraphics[scale=0.18]{graphics/stability_types.jpg}
+
+  \pagebreak
+
+  \subsection{Example: Equilibria Classification of a Damped Pendulum}
+
+  A damped pendulum with 0 input has the following state space equation:
+
+  \(\begin{bmatrix}
+    \dot{\theta} \\
+    \ddot{\theta}
+  \end{bmatrix} =
+  \begin{bmatrix}
+    \dot{\theta} \\
+    -\frac{g}{L}\sin(\theta) - -b\dot{\theta}
+  \end{bmatrix}\)
+
+  We can plot this vector field as a phase diagram in phase space as shown below. Notice that the equilbrium at
+  \(\begin{bmatrix} \pi \\ 0 \end{bmatrix}\) is unstable (states are repelled away from it) while the equilibrium
+  at \(\begin{bmatrix} 0 \\ 0 \end{bmatrix}\) is stable (states are drawn to it).
+
+  \includegraphics[scale=0.23]{./graphics/pendulum_phase.jpg}
+
+  Now let's analyze this more systematically:
+
+  \(\bkt{\D f(\vect{x})} =
+  \begin{bmatrix}
+    0 & 1 \\
+    -\frac{g}{L}\cos(\theta) & -b
+  \end{bmatrix}\)
+
+  But the choice of units is aribtrary. Suppose we chose units such that \(\frac{g}{L} = 1\), \(b = 1\).
+
+  \(\bkt{\D f(\vect{x})} =
+  \begin{bmatrix}
+    0 & 1 \\
+    -\cos(\theta) & -1
+  \end{bmatrix}\)
+
+  \vspace{12pt}
+
+  Equilibrum at \(\begin{bmatrix} 0 \\ 0 \end{bmatrix}\).
+
+  \(\bkt{\D f(\vect{x})} =
+  \begin{bmatrix}
+    0 & 1 \\
+    -1 & -1
+  \end{bmatrix}\) has eigenvalues \(-\frac{1 + j\sqrt{3}}{2},\, \frac{-1 + j\sqrt{3}}{2}\). Thus we can see that
+  the system is asymptotically stable about this equilibrium since both real parts are less than 1.
+
+  \vspace{12pt}
+
+  Equilibrum at \(\begin{bmatrix} \pi \\ 0 \end{bmatrix}\).
+
+  \(\bkt{\D f(\vect{x})} =
+  \begin{bmatrix}
+    0 & 1 \\
+    1 & -1
+  \end{bmatrix}\) which has eigenvalues \(\frac{-1 + \sqrt{5}}{2},\, \frac{-1 - \sqrt{5}}{2}\). We can see one eigenvalue
+  has real part larger than 1 and thus the system is unstable about this equilibrium.
+
+  \pagebreak
+
+  \subsection{Example: Rotation + Scaling}
+
+  \href{https://www.youtube.com/watch?v=uBlhgAkJBos}{"I'll try spinning, that's a good trick!"}
+
+  A matrix of the form below is called a rotation scaling matrix:
+
+  \(\begin{bmatrix}
+    \alpha & -\beta \\
+    \beta & \alpha
+  \end{bmatrix}\)
+
+  Why? Let \(\theta = \tan^{-1}\prn{\frac{\beta}{\alpha}}\). We now rewrite the matrix as.
+
+  \(\dfrac{1}{\sqrt{\alpha^2 + \beta^2}}
+  \begin{bmatrix}
+    \cos(\theta) & -\sin(\theta) \\
+    \sin(\theta) & \cos(\theta) \\
+  \end{bmatrix}\)
+
+  \vspace{12pt}
+
+  Now consider:
+
+  \(\dot{\vect{x}} =
+  \begin{bmatrix}
+    \alpha & -\beta \\
+    \beta & \alpha
+  \end{bmatrix}\vect{x}\)
+
+  \begin{flalign*}
+    \D\brc{\vect{x}^\T \vect{x}}
+    &= 2\vect{x}^\T\dot{\vect{x}}
+    &\\
+    &= 2\vect{x}^\T
+    \begin{bmatrix}
+      \alpha & -\beta \\
+      \beta & \alpha
+    \end{bmatrix}\vect{x}
+    &\\
+    &=
+    2\vect{x}^\T
+    \begin{bmatrix}
+      \alpha & 0 \\
+      0 & \alpha
+    \end{bmatrix}\vect{x} +
+    \cancelto{\vect{0}}{\vect{x}^\T
+    \begin{bmatrix}
+      0 & -\beta \\
+      \beta & 0
+    \end{bmatrix}\vect{x}}
+    &\\
+    &= 2\alpha\norm{\vect{x}}^2
+  \end{flalign*}
+
+  This means \(\norm{\vect{x}(t)}_2 = e^{\alpha t}\norm{\vect{x}_0}_2\) which shows this system is globally exponentially
+  stable.
+
+  Intuitively, the antidiagonal terms go to 0 because they represent instantaneous rotation by 90 degrees.
+  This corresponds to continuous turning or circular motion (which won't affect the length). You may find
+  this property useful when using the Real Jordan Form (see \ref{Real-Jordan-Form}).
+
+  We could've applied this if we analyzed the damped pendulum using the real Jordan Form around its
+  equilibrium to show the rotation and scaling around the origin (revealed in the phase plot).
+
+  \pagebreak
+
+  \subsection{The Lyapanov Function}
+
+  \subsubsection{Derivation}
+
+  We saw in the rotation + scaling example that we could use a norm to establish stability properties. We
+  now generalize this approach using Lyapanov functions. These are norms on state space.
+
+  \(V(\vect{x}) := \norm{\vect{x}}_{\bm{P}}^2 = \vect{x}^\T\bm{P}\vect{x}\), where \(\bm{P} \in \mathbb{W}_+^n\)
+  \begin{flalign*}
+    \dot{V}
+    &= \D\brc{\vect{x}^\T}\bm{P}\vect{x} + \vect{x}^\T\D\brc{\bm{P}\vect{x}}
+    &\\
+    &= \dot{\vect{x}}^\T\bm{P}\vect{x} + \vect{x}^\T\bm{P}\dot{\vect{x}}
+    &\\
+    &= (\bm{A}\vect{x})^\T\bm{P}\vect{x} + \vect{x}^\T\bm{P}\bm{A}\vect{x}
+    &\\
+    &= \vect{x}^\T\bm{A}^\T\bm{P}\vect{x} + \vect{x}^\T\bm{P}\bm{A}\vect{x}
+    &\\
+    &= \vect{x}^\T\underbrace{\prn{\bm{A}^\T\bm{P} + \bm{P}\bm{A}}}_{-\bm{Q}}\vect{x}
+    &\\
+    &= -\vect{x}^\T\bm{Q}\vect{x}
+  \end{flalign*}
+  Thus \(\bm{Q} \succ 0 \implies \dot{V} < 0\).
+
+  Some authors define the Lyapanov operator as \(\bm{L}_{\bm{A}}(\bm{P}) = \bm{A}^\T\bm{P} + \bm{P}\bm{A}\)
+
+  \subsubsection{Application to Establishing GES of Asymptotically Stable LTI Systems}
+
+  Recall a norm with respect to a matrix is bounded by its eigenvalues times the 2 norm.
+
+  \(-\lambda_{\textrm{max}}(\bm{W}_1)\norm{\vect{x}}^2 \le
+  \dot{V}(\vect{x}) \le -\lambda_{\textrm{min}}(\bm{W}_1)\norm{\vect{x}}^2\)
+
+  \(\implies \dot{V} \le -\lambda_{\textrm{min}}(\bm{W}_1)\norm{\vect{x}}^2\)
+
+  \vspace{12pt}
+
+  Let's replace \(\norm{\vect{x}}^2\) as well. We also know:
+
+  \(\lambda_{\textrm{min}}(\bm{P})\norm{\vect{x}}^2 \le V(\vect{x}) \le \lambda_{\textrm{max}}(\bm{P})\norm{\vect{x}}^2\)
+
+  \(\lambda_{\textrm{max}}(\bm{P})\norm{\vect{x}}^2 \le -V(\vect{x}) \le \lambda_{\textrm{min}}(\bm{P})\norm{\vect{x}}^2\)
+
+  \(\lambda_{\textrm{max}}(\bm{P})\norm{\vect{x}}^2 \le -V(\vect{x})\)
+
+  \(\norm{\vect{x}}^2 \le -\dfrac{1}{\lambda_{\textrm{max}}(\bm{P})} V(\vect{x})\)
+
+  \vspace{12pt}
+
+  Substuting this back in we have:
+
+  \(\dot{V} \le -\underbrace{\dfrac{\lambda_{\textrm{min}}(\bm{Q})}{\lambda_{\textrm{max}}(\bm{P})}}_{2\alpha}V(\vect{x})\)
+
+  \(\dot{V} \le \alpha V(\vect{x})\)
+
+  \(\implies V(\vect{x}) \le e^{-2\alpha t}V_0\)
+
+  So if \(\dfrac{\lambda_{\textrm{min}}(\bm{Q})}{\lambda_{\textrm{max}}(\bm{P})} > 0\), the Lyapanov function decays
+  exponentially.
+
+  \pagebreak
+
+  Plugging this back into the inequality we have:
+
+  \(\lambda_{\textrm{min}}(\bm{P})\norm{\vect{x}}^2 \le V(\vect{x}) \le e^{-2\alpha t}V_0\)
+
+  \(\lambda_{\textrm{min}}(\bm{P})\norm{\vect{x}}^2 \le e^{-2\alpha t}V_0\)
+
+  \(\norm{\vect{x}}^2 \le e^{-2\alpha t}\dfrac{V(\vect{x}_0)}{\lambda_{\textrm{min}}(\bm{P})}\)
+
+  \(\norm{\vect{x}} \le \sqrt{e^{-2\alpha t}\dfrac{V(\vect{x}_0)}{\lambda_{\textrm{min}}(\bm{P})}}\)
+
+  \(\norm{\vect{x}} \le e^{-\alpha t}\sqrt{\dfrac{V(\vect{x}_0)}{\lambda_{\textrm{min}}(\bm{P})}}\)
+
+  The 2-norm is decreasing, bounded by \(e^{-\alpha t}\). So we can now see that all asymptotically
+  stable LTI systems are globally exponentially stable.
+
+  \subsubsection{Solving for P Given A and Q}
+
+  We'll see how we different choices of \(\bm{Q}\) can lead to interesting types of Lyapanov functions
+  which have important physical interpretations. But that's getting ahead of things. For now, we
+  want to know when given \(\bm{A}\) and \(\bm{Q}\) if we can find a \(\bm{P}\) such that:
+
+  \(\bm{A}^\T\bm{P} + \bm{P}\bm{A} = -\bm{Q}\)
+
+  In fact the above equation is known as a linear matrix equation (LME). In particular, these
+  types of LMEs are common in control theory and are called
+  \href{https://www.wikiwand.com/en/Sylvester_equation}{Sylvester equations}. In general,
+  there are efficient numerical methods which can solve these types of equations in \(\mathcal{O}(n^3)\) operations.
+
+  \vspace{12pt}
+
+  An analytic solution is given through use of \href{https://www.wikiwand.com/en/Vectorization_(mathematics)}{vectorization}
+  and the \href{https://www.wikiwand.com/en/Kronecker_product#Matrix_equations}{Kronecker Product}.
+
+
+  \((\bm{A} \kronsum \bm{I}_n)\textrm{vec}(\bm{P}) = -\textrm{vec}(\bm{Q})\)
+
+  So the solution is unique when \(\bm{A} \kronsum \bm{I}_n\) is invertible.
+
+  \(\bm{A} \kronsum \bm{I}_n\) has eigenvalues \(\lambda_i + \lambda_j\), \(\lambda_i, \lambda_j \in \spec{\bm{A}}\), so
+  we have unique solutions when \(\lambda_i + \lambda_j \neq 0\)
+
+  \subsubsection{Lyapanov Function When A is Hurwitz}
+
+  Notice when solving the Sylvester equation for \(\bm{P}\), it is sufficient for \(\bm{A}\) to be Hurwitz.
+  Start by noticing that the Lyapanov operator is a product rule. The idea behind the
+  subsitution is very similar to the use of an integrating factor when solving first order
+  linear ODEs.
+
+  \(\bm{L}_{\bm{A}}(\bm{P}) = \bm{A}^\T\bm{P} + \bm{P}\bm{A}\)
+
+  Choose \(\displaystyle \bm{P} = \int_0^\infty e^{\bm{A}^\T t} \bm{Q} e^{\bm{A} t}\, dt \)
+
+  \pagebreak
+
+  Subsituting back in to the Lyapanov operator, we have:
+  \begin{flalign*}
+    \bm{L}_{\bm{A}}\prn{\int_0^\infty e^{\bm{A}^\T t} \bm{Q} e^{\bm{A} t}\, dt}
+    &=
+    \bm{A}^\T \prn{\int_0^\infty e^{\bm{A}^\T t} \bm{Q} e^{\bm{A} t}\, dt} +
+    \prn{\int_0^\infty e^{\bm{A}^\T t} \bm{Q} e^{\bm{A} t}\, dt}\bm{A}
+    &\\
+    &=
+    \int_0^\infty \bm{A}^{\T} e^{\bm{A}^\T t} \bm{Q} e^{\bm{A} t}
+     + e^{\bm{A}^\T t} \bm{Q} e^{\bm{A} t}\bm{A}\, dt
+    &\\
+    &=
+    \int_0^\infty \dfrac{d}{dt} \bkt{e^{\bm{A}^\T t} \bm{Q} e^{\bm{A} t}}\, dt
+    &\\
+    &= \eval{e^{\bm{A}^\T t} \bm{Q} e^{\bm{A} t}}_0^\infty
+    &\\
+    &= -\bm{Q}
+  \end{flalign*}
+
+  \textbf{Interpretation of the Lyapanov Function for Hurwitz Matricies}
+
+  Let's plug in a constant vector to the Lyapanov equation and see what happpens.
+  \begin{flalign*}
+    V(\vect{x}_0)
+    &= \vect{x}_0^{\T}\prn{\int_0^\infty e^{\bm{A}^\T t} \bm{Q} e^{\bm{A} t}\, dt}\vect{x}_0
+    &\\
+    &= \int_0^\infty \vect{x}_0^{\T}e^{\bm{A}^\T t} \bm{Q} e^{\bm{A} t}\vect{x}_0\, dt
+    &\\
+    &= \int_0^\infty \norm{\vect{x}(t)}^2_{\bm{Q}}\, dt
+  \end{flalign*}
+  Thus we can see this as a form of cost to move from state \(\vect{x}_0\) to \(\vect{x}_{\textrm{eq}}\). Another
+  view is this characterizes the work done passively by the system in moving from \(\vect{x}_0\)
+  to \(\vect{x}_{\textrm{eq}}\). Different choices of \(\bm{Q}\), of course, will yield different values for
+  how much "work" or "cost" there is.
+
+  \pagebreak
+
+  \subsection{Controllablity}
+
+  \subsubsection{Definitions}
+
+  \textbf{Definition}: Set of States Reachable in in \(t\) time or \(\nu\) epochs
+
+  The reachable subspace of a LTI system given by \(\bm{A}, \bm{B}, \bm{C}, \bm{D}\)
+
+  Continuous time:
+
+  \(R_t := \displaystyle
+  \brc{\left.\int_0^t e^{(t - \tau)\bm{A}}\bm{B}\vect{u}(\tau)\,d\tau\ \right\vert\ \vect{u} : [0, t] \to \mathbb{R}^m}\)
+
+  Discrete time:
+
+  \(R_\nu := \displaystyle
+  \brc{\left.\sum_{k = 0}^{\nu - 1} \bm{A}^{\nu - k - 1}\bm{B}\vect{u}[k]\ \right\vert\ \vect{u} : [0\,..\,t] \to \mathbb{R}^m}\)
+
+  Notice that \(t_2 > t_1 \implies \mathcal{R}_{t_2} \subseteq \mathcal{R}_{t_1} \)
+
+  Intuitively this makes sense. We can reach more states given more time.
+
+  \vspace{12pt}
+
+  \textbf{Definition}: Reachable Subspace
+
+  \(R := \displaystyle \bigcup_{t \ge 0} R_t\)
+
+  This is the set of all states reachable given some input and unlimited time. We'll see
+  why we know this is a subspace in a bit.
+
+  \vspace{12pt}
+
+  \textbf{Definition}: Controllable
+
+  A system is controllabe iff \(R = \mathbb{R}^m\).
+
+  That is, any state is reachable given enough time.
+
+  \subsubsection{Discrete Time Controllability}
+
+  In a pratical sense, it would be impossible to search over all possible inputs over infinite time to see
+  if all states are truly reachable. We'll need to develop a better way of analyzing controllability.
+
+  Let's start by recalling in discrete time:
+
+  \(\vect{x}[1] = \bm{A}\vect{x}[0] + \bm{B}\vect{u}[0]\)
+  \begin{flalign*}
+    \vect{x}[2]
+    &= \bm{A}\vect{x}[1] + \bm{B}\vect{u}[0]
+    &\\
+    &=
+    \bm{A}(\bm{A}\vect{x}[0] + \bm{B}\vect{u}[0]) +
+    \bm{B}\vect{u}[1]
+    &\\
+    &= \bm{A}^2\vect{x}[0] + \bm{A}\bm{B}\vect{u}[0] + \bm{B}\vect{u}[1]
+  \end{flalign*}
+  Continuing on inductively we have:
+
+  \(\vect{x}[\nu] = \bm{A}^{\nu}\vect{x}[0] +  \displaystyle
+  \sum_{k = 0}^{\nu - 1} \bm{A}^{\nu - k - 1}\bm{B}\vect{u}[k]\)
+
+  \pagebreak
+
+  Define:
+
+  \(\mathcal{C}_{\nu} := \begin{bmatrix} \bm{B} & \bm{AB} & \dots & \bm{A}^{\nu - 1}\bm{B}\end{bmatrix}\)
+
+  \vspace{12pt}
+
+  We can now write:
+
+  \(\vect{x}[\nu] = \bm{A}^nx[\nu] +
+  \mathcal{C}_{\nu}
+  \begin{bmatrix} \vect{u}[\nu - 1] \\ \vdots \\ \vect{u}[0] \end{bmatrix}\)
+
+  \vspace{12pt}
+
+  We can now see the set of states reachable in \(\nu\) epochs is \(R_{\nu} = \img{\mathcal{C}_{\nu}}\).
+  How big can \(\mathcal{R}_v\) get? Recall the Caley-Hamilton theorem.
+
+  \(\charc{\bm{A}}(\bm{A}) = [0]\). Thus we can see that a linear combination of \(\bm{A}, \dots, \bm{A}^n\) are
+  not linearly independent.
+
+  \vspace{12pt}
+
+  Thus we can see:
+
+  \(\rank(\mathcal{C}_{\nu}) =
+  \begin{cases}
+     \nu \IF \nu < n \\
+     n \IF \nu \ge n \\
+  \end{cases}\)
+
+  \textbf{Definition}: Controllability Matrix
+
+  \(\mathcal{C} := \begin{bmatrix} \bm{B} & \bm{AB} & \dots & \bm{A}^{n - 1}\bm{B}\end{bmatrix}\)
+
+  The system is controllable iff \(\rank(\mathcal{C}) = n\)
+
+  \pagebreak
+
+  \subsubsection{Continuous Time Controllability}
+
+  It turns out that the controllability matrix is the same in continuous time as in discrete time.
+  Let's derive this.
+
+  \textbf{Lemma}:
+
+  \(\bm{A}^k\) is linearly dependent with \(\bm{A}, \dots, \bm{A}^{n - 1}\ \ \forall k \ge n\)
+  \begin{flalign*}
+    e^{\bm{A}t}
+    &:= \sum_{k = 0}^{\infty} \dfrac{(\bm{A}t)^k}{k!}
+    &\\
+    &= \sum_{k = 0}^{n - 1} \dfrac{(\bm{A}t)^k}{k!} +
+    \sum_{k = n}^{\infty} \dfrac{(\bm{A}t)^k}{k!}
+    &\\
+    &= \sum_{k = 0}^{n - 1} c_k(t) \bm{A}^k
+  \end{flalign*}
+  \begin{flalign*}
+    \vect{x}(t)
+    &= e^{\bm{A}t}\vect{x}_0 + \int_{0}^{t} e^{\bm{A}\tau}\bm{B}u(t - \tau)\, d\tau
+    &\\
+    &= e^{\bm{A}t}\vect{x}_0 + \int_{0}^{t} \prn{\sum_{k = 0}^{n} c_k(\tau) \bm{A}^k}\bm{B}u(t - \tau)\, d\tau
+    &\\
+    &= e^{\bm{A}t}\vect{x}_0 +
+    \sum_{k = 0}^{n - 1}\bm{A}^k\bm{B}
+    \int_{0}^{t} c_k(\tau) u(t - \tau)\, d\tau
+    &\\
+    &= e^{\bm{A}t}\vect{x}_0 +
+    \underbrace{\begin{bmatrix} \bm{B} & \bm{AB} & \dots & \bm{A}^{n - 1}\bm{B}\end{bmatrix}}_{\mathcal{C}}
+    \begin{bmatrix}
+      \displaystyle \int_{0}^{t} c_1(\tau) u(t - \tau)\, d\tau  \\
+      \vdots \\
+      \displaystyle \int_{0}^{t} c_{n - 1}(\tau) u(t - \tau)\, d\tau  \\
+    \end{bmatrix}
+   &\\
+    &= e^{\bm{A}t}\vect{x}_0 +
+    \mathcal{C}
+    \begin{bmatrix}
+      \displaystyle \int_{0}^{t} c_1(\tau) u(t - \tau)\, d\tau  \\
+      \vdots \\
+      \displaystyle \int_{0}^{t} c_{n - 1}(\tau) u(t - \tau)\, d\tau  \\
+    \end{bmatrix}
+  \end{flalign*}
+
+  Notice that reachability in continuous time only depends on \(\mathcal{C}\). Given a large enough
+  input vector, we can reach any state that is in \(\img{\mathcal{C}}\), so once again, the system
+  is controllable iff \(\rank(\bm{C}) = n\)
+
+  \pagebreak
+
+  There is also another context in which the controllability shows up in continuous time.
+
+  \(\dot{\vect{x}} = \bm{A}\vect{x} + \bm{B}\vect{u}\)
+
+  \(\ddot{\vect{x}} = \bm{A}^2\vect{x} + \bm{A}\bm{B}\vect{u} + \bm{B}\dot{\vect{u}}\)
+
+  Continuing inductively:
+  \begin{flalign*}
+    \vect{x}^{(\nu)}
+    &= \bm{A}^{\nu}\vect{x} + \sum_{k = 0}^{\nu - 1} \bm{A}^{\nu - k - 1}\bm{B} \vect{u}^{(k)}
+    &\\
+    &= \bm{A}^{\nu}\vect{x} +
+    \begin{bmatrix} \bm{B} & \bm{AB} & \dots & \bm{A}^{\nu - 1}\bm{B} \end{bmatrix}
+    \begin{bmatrix}
+      \vect{u}^{(n)} \\
+      \vdots \\
+      \vect{u}
+    \end{bmatrix}
+    &\\
+    &= \bm{A}^{\nu}\vect{x} +
+    \mathcal{C}
+    \begin{bmatrix}
+      \vect{u}^{(n)} \\
+      \vdots \\
+      \vect{u}
+    \end{bmatrix}
+  \end{flalign*}
+  Thus we have:
+
+  \(\mathcal{C}
+   \begin{bmatrix}
+      \vect{u}^{(n)} \\
+      \vdots \\
+      \vect{u}
+    \end{bmatrix}
+  =
+  \vect{x}^{n} - \bm{A}^{n}\vect{x}\)
+
+  If \(\mathcal{C}\) is full rank (that is, the system is controllable), we can make the right hand side
+  (the state derivatives of power \(n\)) anything we want.
+
+  \subsubsection{Controllability is Coordinate Independent}
+
+  Intuitively, the choice of units we use for our state space should not affect the controllability. Indeed
+  it doesn't. We now prove this. Suppose we represent our state space with new basis \(\mathcal{B}\). Recall from
+  the Section \ref{state-space-coord} discussion on state space coordinate systems:
+
+  \(\bm{A} = \bm{P}\bm{A}_{\mathcal{B}}\bm{P}^{-1}\), \(\bm{B} = \bm{P}\bm{B}_{\mathcal{B}}\)
+  \begin{flalign*}
+    \mathcal{C}
+    &=
+    \begin{bmatrix}
+      \bm{P}\bm{B}_{\mathcal{B}} &
+      (\bm{P}\bm{A}_{\mathcal{B}}\cancel{\bm{P}^{-1}})(\cancel{\bm{P}}\bm{B}_{\mathcal{B}}) & \dots
+      (\bm{P}\bm{A}^n_{\mathcal{B}}\cancel{\bm{P}^{-1}})(\cancel{\bm{P}}\bm{B}_{\mathcal{B}})
+    \end{bmatrix}
+    &\\
+    &=
+    \begin{bmatrix}
+      \bm{P}\bm{B}_{\mathcal{B}} &
+      \bm{P}\bm{A}_{\mathcal{B}}\bm{B}_{\mathcal{B}} & \dots &
+      \bm{P}\bm{A}^n_{\mathcal{B}}\bm{B}_{\mathcal{B}}
+    \end{bmatrix}
+    &\\
+    &=
+    \bm{P}
+    \underbrace{\begin{bmatrix}
+      \bm{B}_{\mathcal{B}} &
+      \bm{A}_{\mathcal{B}}\bm{B}_{\mathcal{B}} & \dots &
+      \bm{A}^n_{\mathcal{B}}\bm{B}_{\mathcal{B}}
+    \end{bmatrix}}_{\mathcal{C}_{\mathcal{B}}}
+    &\\
+    &= \bm{P}\mathcal{C}_{\mathcal{B}}
+  \end{flalign*}
+  But since \(\bm{P}\) is a change of basis matrix, it must be invertible.
+
+  \(\implies \rank(\mathcal{C}) = \rank(\bm{P}\mathcal{C}_{\mathcal{B}}) = \rank(\mathcal{C}_{\mathcal{B}})\)
+
+  \pagebreak
+
+  \subsubsection{The Controllable and Uncontrollable Subspace}
+
+  An invariant subspace is a subspace \((V, \mathbb{F}) : \bm{A}V = V\)
+
+  Eigenspaces (span of eigenvectors) are clearly invariant subspaces and so is \(\brc{\vect{0}}\) and \(\mathbb{R}^n\)
+  What other subspaces might be invariant? Well consider an block upper triangular matrix.
+
+  \(\bm{A} =
+  \begin{bmatrix}
+    \bm{A}_{11} & \bm{A}_{12} \\
+    0 & \bm{A}_{22}
+  \end{bmatrix}\) where \(\bm{A}_{11} \in \mathbb{R}^{r \times r}\)
+
+  Clearly \(V = \brc{\left.\begin{bmatrix} \vect{v}_r \\ 0 \end{bmatrix} \right\vert \vect{z} \in \mathbb{R}^r}\)
+  is an invariant subspace.
+
+  \textbf{Theorem:} The Controllable Subspace is A-invariant
+  \begin{flalign*}
+    \bm{A}\begin{bmatrix} \bm{B} & \bm{AB} & \dots & \bm{A}^{n - 1}\bm{B} \end{bmatrix}\vect{v}_k
+    &= \bm{A} \sum_{k = 0}^{n - 1} \bm{A}^{n - k - 1}\bm{B}\vect{v}_k
+    &\\
+    &= \sum_{k = 0}^{n - 1} \bm{A}^{n - k}\bm{B}\vect{v}_k
+    &\\
+    &= \bm{A}^n\bm{B}\vect{v}_{0} + \sum_{k = 1}^{n - 1} \bm{A}^{n - k}\bm{B}\vect{v}_k
+    &\\
+    &= \sum_{k = 1}^{n - 1} c_k\bm{A}^{n - k}\bm{B}\vect{v}_{0} +
+    \sum_{k = 1}^{n - 1} \bm{A}^{n - k}\bm{B}\vect{v}_k
+    &\\
+    &= \begin{bmatrix} \bm{B} & \bm{AB} & \dots & \bm{A}^{n - 1}\bm{B} \end{bmatrix}
+    \begin{bmatrix}
+      0 \\
+      \vect{v}_1 + c_1\vect{v}_0 \\
+      \vdots \\
+      \vect{v}_{n - 1} + c_{n - 1}\vect{v}_0 \\
+    \end{bmatrix}
+  \end{flalign*}
+  \(\implies \bm{A}\img{\mathcal{C}} = \img{\mathcal{C}}\)
+
+  ---
+
+  We can characterize an invariant subspace with a matrix.
+
+  Let \((V, \mathbb{F}) \subset \mathbb{R}^{n \times k}\) be
+  an invariant subspace spanned by \(\vect{v}_1, \dots, \vect{v}_k\)
+
+  Define:
+
+  \(\bm{M} = \begin{bmatrix} \vect{v}_1 & \cdots & \vect{v}_k \end{bmatrix}\)
+
+  Notice that:
+
+  \(\bm{A}\vect{v}_1 = \displaystyle \sum_{k = 1}^k x_{1, k}\vect{v}_k\)
+
+  \(\bm{A}\vect{v}_2 = \displaystyle \sum_{k = 1}^k x_{2, k}\vect{v}_k\)
+
+  \(x_{i, k}\) forms the entries of a matrix \(\bm{X}\)
+
+  \(\bm{A}\bm{M} = \bm{M}
+  \begin{bmatrix}
+    x_{1, 1}  & \cdots & x_{1,k}  \\
+    \vdots & & \vdots \\
+    x_{k, 1}  & \cdots & x_{k,k}  \\
+  \end{bmatrix}\)
+
+  So we have:
+
+  \(\bm{A}\bm{M} = \bm{M}\bm{X}\)
+
+  So \(\img{\bm{M}}\) is A-invariant \(\iff \exists \bm{X} : \bm{A}\bm{M} = \bm{M}\bm{X}\)
+
+  Which is a Sylvester equation. We know this has solutions when \(\bm{A}\) and \(\bm{M}\)
+  don't share eigenvalues.
+
+  Now consider \(\tilde{\bm{M}} \in \mathbb{R}^{n \times (n - k)}\).
+  \begin{flalign*}
+    \bm{A}\begin{bmatrix} \bm{M} & \tilde{\bm{M}}\end{bmatrix}
+    &= \begin{bmatrix} \bm{A}\bm{M} & \bm{A}\tilde{\bm{M}}\end{bmatrix}
+    &\\
+    &= \begin{bmatrix} \bm{M} & \tilde{\bm{M}}\end{bmatrix}
+    \begin{bmatrix}
+      \bm{A}_{11} & \bm{A}_{12} \\
+      0 & \bm{A}_{22}
+    \end{bmatrix}
+  \end{flalign*}
+  where \(\begin{bmatrix} \bm{A}_{12} \\ \bm{A}_{22} \end{bmatrix} =
+  \begin{bmatrix} \bm{M} & \tilde{\bm{M}} \end{bmatrix}^{-1}\bm{A}\tilde{\bm{M}}\)
+
+  So if we have \(\bm{P} = \begin{bmatrix} \bm{M} & \tilde{\bm{M}}\end{bmatrix}\)
+
+  \(\bm{P}^{-1}\bm{A}\bm{P} =
+  \begin{bmatrix}
+    \bm{A}_{11} & \bm{A}_{12} \\
+    0 & \bm{A}_{22}
+  \end{bmatrix}\)
+
+  \vspace{12pt}
+
+  So as long as we select \(\tilde{\bm{M}}\) so that \(\bm{P}\) is invertible we can reveal
+  the controllable subspace.
+
+  \(\bm{P}^{-1}\bm{A}\bm{P} =
+  \begin{bmatrix}
+    \bm{A}_{c} & \bm{A}_{12} \\
+    0 & \bm{A}_{22}
+  \end{bmatrix}\),
+  \(\bm{P}^{-1}\bm{B} = \begin{bmatrix} \bm{B}_c \\ 0 \end{bmatrix}\)
+
+  \(\bm{P}^{-1}\mathcal{C} =
+  \begin{bmatrix}
+    \bm{B}_c  & \bm{B}_c\bm{A}_{c} & \cdots & \bm{A}_{c}^{n - 1}\bm{B}_c \\
+    0 & 0 & \cdots & 0
+  \end{bmatrix}\)
+
+  \pagebreak
+
+  \subsubsection{Impulse Inputs}
+  Recall in continuous time, we can reach any state given a large enough input.
+  The "largest" input vector we could provide are impulse inputs and inputs that are
+  distriubtional derivatives of the impulse (in general you don't need to know what this
+  means but that it behaves like a derivative to the Laplace transform).
+
+  \textbf{Lemma}:
+
+  Recall that \(f(x) = \dfrac{1}{1 - x} = \displaystyle \sum_{k = 0}^\infty x^n\)
+
+  \((s\bm{I}_n - \bm{A})^{-1} = \displaystyle \sum_{k = 0}^\infty s^{-k}\bm{A}^k\)
+
+  ---
+
+  \vspace{12pt}
+
+  Now for a single input system choose:
+
+  Consider \(u(t) = \vect{v}\delta^{(k)}(t)\)
+
+  \(U(s) = \vect{v}s^\nu\)
+  \begin{flalign*}
+    \bm{X}(s)
+    &= (s\bm{I}_n - \bm{A})^{-1}\bm{B}\bm{U}(s)
+    &\\
+    &= (s\bm{I}_n - \bm{A})^{-1}\bm{B}\vect{v}s^{\nu}
+    &\\
+    &= \prn{\sum_{k = 0}^{\infty} s^{-k}\bm{A}^k} \bm{B}\vect{v}s^{\nu}
+    &\\
+    &= \prn{\sum_{k = 0}^{\infty} s^{\nu - k}\bm{A}^k}\bm{B}\vect{v}
+    &\\
+    &= \prn{\underbrace{\sum_{k = 0}^{\nu - 1} s^{\nu - k}\bm{A}^k}_{\textrm{Impulse terms}} +
+    \sum_{k = \nu}^{\infty} s^{\nu - k}\bm{A}^k}\bm{B}\vect{v}
+  \end{flalign*}
+  \(x(t) = \displaystyle \textrm{Impulse terms} + \sum_{k = \nu}^\infty \dfrac{t^k}{k!}\bm{A}^k\bm{B}\vect{v}\)
+
+  So we have:
+
+  \(x(0^+) = \bm{A}^k\bm{B}\vect{v}\)
+
+  Now choose \(u(t) = \displaystyle \sum_{k = 0}^{n - 1}\vect{v}_k\delta^{(k)}(t)\)
+
+  \pagebreak
+
+  By linearity we'll have:
+
+  \(x(0^+) = \displaystyle \sum_{k = 0}^{n - 1} c_k\bm{A}^k\bm{B}
+  = \underbrace{\begin{bmatrix} \bm{B} & \bm{AB} & \dots & \bm{A}^{n - 1}\bm{B}\end{bmatrix}}_{\mathcal{C}}
+  \begin{bmatrix}
+    \vect{v}_0 \\
+    \vdots \\
+    \vect{v}_{n - 1}
+  \end{bmatrix} =
+  \mathcal{C}
+  \begin{bmatrix}
+    \vect{v}_0 \\
+    \vdots \\
+    \vect{v}_{n - 1}
+  \end{bmatrix}\)
+
+  \vspace{12pt}
+
+  Thus \(\vect{x}(0^+)\) can be made to be any element of \(\img{\mathcal{C}}\). Intuitively,
+  given infinite inputs, we can steer the system state to be anything in the
+  reachable subspace instantaneously.
+
+  \subsection{Least Norm Input}
+
+  Often we want to get to a reachable state while minimizing the work spent to get there. To do this we minimize:
+
+  \(\displaystyle \int_0^t \norm{\vect{u}(\tau)}^2\,d\tau\)
+
+  \vspace{12pt}
+
+  \textbf{Discrete Time}
+
+  Let's start by discretizing \(\bm{u}\). Let it be piecewise constant
+  on \(\vect{u}\) with duration \(h = \frac{t_f}{N}\).
+
+  \(u(\tau) = u_d[k]\), \(\ kh \le \tau < (k + 1)h\) where \(k \in [0\,..\,N - 1]\)
+
+  Let \(\bm{A}_d = e^{\bm{A}h}\), \(\bm{B}_d = \displaystyle \prn{\int_{0}^h e^{\bm{A}\tau}\,d\tau}\bm{B}\)
+
+  \(\vect{x}_{\textrm{dst}} =
+  \begin{bmatrix} \bm{B}_d & \bm{A}_d\bm{B}_d & \dots & \bm{A}_d^{N - 1}\bm{B}_d\end{bmatrix}
+  \begin{bmatrix} \vect{u}_d[N - 1] \\ \vdots \\ \vect{u}_d[0] \end{bmatrix}\)
+  \begin{flalign*}
+    \begin{bmatrix} \vect{u}_d[N - 1] \\ \vdots \\ \vect{u}_d[0] \end{bmatrix}_{\textrm{ln}}
+    &= \begin{bmatrix} \bm{B}_d & \bm{A}_d\bm{B}_d & \dots & \bm{A}_d^{N - 1}\bm{B}_d\end{bmatrix}^+\vect{x}(t_f)
+    &\\
+    &=\begin{bmatrix} \bm{B}_d^\T \\ (\bm{A}_d\bm{B}_d)^\T \\ \dots \\ \prn{\bm{A}_d^{N - 1}\bm{B}_d}^\T \end{bmatrix}
+    \prn{\begin{bmatrix} \bm{B}_d & \bm{A}_d\bm{B}_d & \dots & \bm{A}_d^{N - 1}\bm{B}_d\end{bmatrix}
+    \begin{bmatrix} \bm{B}_d^\T \\ (\bm{A}_d\bm{B}_d)^\T \\ \dots \\ \prn{\bm{A}_d^{N - 1}\bm{B}_d}^\T \end{bmatrix}}^{-1}
+    \vect{x}(t_f)
+    &\\
+    &= \begin{bmatrix} \bm{B}_d^\T \\ (\bm{A}_d\bm{B}_d)^\T \\ \dots \\ \prn{\bm{A}_d^{N - 1}\bm{B}_d}^\T \end{bmatrix}
+    \sum_{k = 0}^{N - 1} \prn{\bm{A}_d^k\bm{B}_d}\prn{\bm{A}^k\bm{B}_d}^\T
+    &\\
+  \end{flalign*}
+  So we see that:
+
+  \(\vect{u}[k]_{\textrm{dln}} = \displaystyle
+  \prn{\bm{A}_d^{N - 1 - k}\bm{B}_d}^\T \sum_{k = 0}^{N - 1}
+  \prn{\bm{A}_d^k\bm{B}_d}\prn{\bm{A}^k\bm{B}_d}^\T\)
+
+  \pagebreak
+
+  \textbf{Continuous Time}
+
+  Now approximating \(\bm{B}_d\)
+  \begin{flalign*}
+    \bm{B}_d
+    &= \prn{\int_{0}^h e^{\bm{A}\tau}\,d\tau}\bm{B}
+    &\\
+    &= \prn{\int_{0}^h \sum_{k = 0}^\infty \dfrac{(\bm{A}\tau)^k}{k!}\,d\tau}\bm{B}
+    &\\
+    &= \prn{\int_{0}^h \sum_{k = 0}^\infty \dfrac{(\bm{A}\tau)^k}{k!}\,d\tau}\bm{B}
+    &\\
+    &= \prn{\int_{0}^h \bm{I} + \sum_{k = 1}^\infty \dfrac{(\bm{A}\tau)^k}{k!}\,d\tau}\bm{B}
+    &\\
+    &= \prn{\int_{0}^h \bm{I}\,d\tau + \int_{0}^h \sum_{k = 1}^\infty \dfrac{(\bm{A}\tau)^k}{k!}\,d\tau}\bm{B}
+    &\\
+    &= h\bm{B} + \mathcal{O}(h^2)
+  \end{flalign*}
+
+  Now we can rewrite:
+
+  \(\bm{A}^{N - k - 1}\bm{B} = e^{\bm{A}(t_f - t)}\bm{B}_d =
+  h\prn{e^{\bm{A}(t_f - t)}\bm{B}} + \mathcal{O}(h^2)\)
+  \begin{flalign*}
+  \vect{u}_{\textrm{ln}}(t)
+  &= \lim_{N \to \infty}
+  \bkt{h\prn{e^{\bm{A}(t_f - t)}\bm{B}}^\T
+  \prn{\sum_{k = 0}^{N - 1} \prn{e^{\bm{A}hk}\bm{B}}\prn{e^{\bm{A}hk}\bm{B}}^\T h^2}^{-1} + \mathcal{O}(h)}\vect{x}_{\textrm{dst}}
+  &\\
+  &= \lim_{N \to \infty}
+  \bkt{\cancel{h}\prn{e^{\bm{A}(t_f - t)}\bm{B}}^\T
+  \cancel{\dfrac{1}{h}}
+  \prn{\sum_{k = 0}^{N - 1} \prn{e^{\bm{A}hk}\bm{B}}\prn{e^{\bm{A}hk}\bm{B}}^\T h}^{-1} + \mathcal{O}(h)}\vect{x}_{\textrm{dst}}
+  &\\
+  &= \lim_{N \to \infty}
+  \bkt{\prn{e^{\bm{A}(t_f - t)}\bm{B}}^\T
+  \prn{\sum_{k = 0}^{N - 1} \prn{e^{\bm{A}hk}\bm{B}}\prn{e^{\bm{A}hk}\bm{B}}^\T h}^{-1} + \mathcal{O}(h)}\vect{x}_{\textrm{dst}}
+  &\\
+  &= \prn{e^{\bm{A}(t_f - t)}\bm{B}}^\T
+  \prn{\int_0^{t_f} \prn{e^{\bm{A}\tau}\bm{B}}\prn{e^{\bm{A}\tau}\bm{B}}^\T\,d\tau}^{-1}\vect{x}_{\textrm{dst}}
+  &\\
+  &= \prn{e^{\bm{A}(t_f - t)}\bm{B}}^\T
+  \prn{\int_0^{t_f} e^{\bm{A}\tau}\bm{B}\bm{B}^{\T} e^{\bm{A}^{\T} \tau}\,d\tau}^{-1}\vect{x}_{\textrm{dst}}
+  \end{flalign*}
+  Notice if we want to take less time, \(t_f\),
+  the inverse operation will turn that into division and make \(u\) larger.
+
+  \pagebreak
+
+  \subsubsection{The Controllability Grammian}
+
+  \vspace{12pt}
+
+  \textbf{Lemma}:
+
+  Let \(\bm{W}_c(t_f) = \displaystyle \int_0^{t_f} e^{\bm{A}\tau}\bm{B}\bm{B}^{\T} e^{\bm{A}^{\T} \tau}\,d\tau\)
+
+  \(\bm{W}^\T_c(t_f) = \bm{W}_c(t_f)\)
+
+  \vspace{6pt}
+
+  ---
+
+  \textbf{Minimum Energy, Finite Time Horizon}
+
+  \(\int_0^{t_f} \norm{\vect{u}(\tau)}^2\, d\tau =
+  \vect{x}_{\textrm{dst}}^{\T} \prn{\bm{W}_c(t_f)}^{-1}\, \vect{x}_{\textrm{dst}}\)
+
+  \vspace{12pt}
+
+  \textbf{Proof:}
+  \begin{flalign*}
+    \int_0^{t_f} \norm{\vect{u}(\tau)}^2\, d\tau
+    &= \int_0^{t_f} \vect{u}^\T(\tau)\vect{u}(\tau) \, d\tau
+    &\\
+    &= \int_0^{t_f}
+    \prn{\vect{x}_{\textrm{dst}}^\T
+    \prn{\bm{W}^\T_c(t_f)}^{-1}
+    \prn{e^{\bm{A}(t_f - \tau)}\bm{B}}}
+    \prn{\prn{e^{\bm{A}(t_f - \tau)}\bm{B}}^\T
+    \prn{\bm{W}_c(t_f)}^{-1}\,
+    \vect{x}_{\textrm{dst}}}\, d\tau
+    &\\
+    &= \int_0^{t_f}
+    \vect{x}_{\textrm{dst}}^\T
+    \prn{\bm{W}_c(t_f)}^{-1}
+    e^{\bm{A}(t_f - \tau)}\bm{B}
+    \bm{B}^{\T}e^{\bm{A}^{\T}(t_f - \tau)}
+    \prn{\bm{W}_c(t_f)}^{-1}\,
+    \vect{x}_{\textrm{dst}}\, d\tau
+    &\\
+    &= \int_0^{t_f}
+    \vect{x}_{\textrm{dst}}^{\T}
+    \prn{\bm{W}_c(t_f)}^{-1}
+    e^{\bm{A}(t_f - \tau)}\bm{B}
+    \bm{B}^{\T}e^{\bm{A}^{\T}(t_f - \tau)}
+    \prn{\bm{W}_c(t_f)}^{-1}\,
+    \vect{x}_{\textrm{dst}}\, d\tau
+    &\\
+    &=
+    \vect{x}_{\textrm{dst}}^{\T}
+    \prn{\bm{W}_c(t_f)}^{-1}
+    \prn{\int_0^{t_f} e^{\bm{A}(t_f - \tau)}\bm{B} \bm{B}^{\T}e^{\bm{A}^{\T}(t_f - \tau)}\, d\tau}
+    \prn{\bm{W}_c(t_f)}^{-1}\,
+    \vect{x}_{\textrm{dst}}
+  \end{flalign*}
+  Let \(u = t_f - \tau\), \(du = -d\tau\)
+  \begin{flalign*}
+    \int_0^{t_f} \norm{\vect{u}(\tau)}^2\, d\tau
+    &=
+    -\vect{x}_{\textrm{dst}}^{\T}
+    \prn{\bm{W}_c(t_f)}^{-1}
+    \prn{\int_{t_f}^{\,0} e^{\bm{A}u}\bm{B} \bm{B}^{\T}e^{\bm{A}^{\T}u}\, du}
+    \prn{\bm{W}_c(t_f)}^{-1}\,
+    \vect{x}_{\textrm{dst}}
+    &\\
+    &=
+    \vect{x}_{\textrm{dst}}^{\T}
+    \prn{\bm{W}_c(t_f)}^{-1}
+    \prn{\int_{0}^{t_f} e^{\bm{A}u}\bm{B} \bm{B}^{\T}e^{\bm{A}^{\T}u}\, du}
+    \prn{\bm{W}_c(t_f)}^{-1}\,
+    \vect{x}_{\textrm{dst}}
+    &\\
+    &=
+    \vect{x}_{\textrm{dst}}^{\T}
+    \prn{\bm{W}_c(t_f)}^{-1}
+    \cancel{\bm{W}_c(t_f)}
+    \cancel{\prn{\bm{W}_c(t_f)}^{-1}}
+    \vect{x}_{\textrm{dst}}
+    &\\
+    &= \vect{x}_{\textrm{dst}}^{\T} \prn{\bm{W}_c(t_f)}^{-1}\, \vect{x}_{\textrm{dst}}
+  \end{flalign*}
+
+  \pagebreak
+
+  \textbf{Minimum Energy, Infinite Time Horizon}
+
+  Likewise we can take quantify minimum energy given infinite time by examining the last theorem in the limit.
+
+  \(\displaystyle \int_{0}^{\infty} \norm{\vect{u}_{\textrm{ln}}(\tau)}^2\, d\tau =
+  \vect{x}_{\textrm{dst}}^\T
+  \underbrace{
+  \bkt{\lim_{t_f \to \infty} \prn{\int_0^{t_f} e^{\bm{A}\tau}\bm{B}\bm{B}^{\T} e^{\bm{A}^{\T} \tau}\,d\tau}^{-1}}}_{\bm{W}_c}
+  \vect{x}_{\textrm{dst}} = \vect{x}_{\textrm{dst}}^\T \bm{W}_c \vect{x}_{\textrm{dst}}\)
+
+  \(\bm{P}\) is uniquely determined this way so long as \(\bm{A}\) is Hurwitz. In which case, \(\bm{P}\) is
+  positive definite. There is always some nonzero cost to getting to a destination.
+
+  If \(\bm{A}\) is not Hurwitz, \(\bm{W}_c\) may still exist, but \(\bm{W}_c\) may have a nontrivial nullspace
+  (in which case it is positive semidefinite instead of positive definite).
+  In that case, there are certain destinations we can get to for arbitrarily small energy. Once you
+  give these systems a little kick, their instability will carry you to the destination.
+
+  The quantity \(\bm{W}_c\) is called the controllability \href{https://www.wikiwand.com/en/Gram_matrix}{Grammian}.
+  Grammians (or Gram matrices) are
+  quantities given by \(\bm{A}^\H\bm{A}\) where \(\bm{A} \in \mathbb{R}^{n \times n}\). They are hermitian
+  positive semidefinite and capture many intrinsic geometric properties of a space.
+
+  The integration in the controllability Grammian may seem familiar if you recall the last section
+  on Lyapanov functions. Indeed we can see that \(\bm{W}_c(t_f)\) is given by the solution to the
+  Sylvester equation:
+
+  \(\bm{P}\bm{A} + \bm{A}^{\T}\bm{P} = -\bm{B}\bm{B}^{\T}\) where \(\bm{A}\) is Hurwitz.
+
+  \vspace{12pt}
+
+  \textbf{Theorem:} \(\rank(\bm{W}_c) = \rank(\mathcal{C})\)
+
+  Consider \(e^{\bm{A}t}\bm{B}\). Recall from that due to Caley-Hamilton we can represent:
+
+  \(e^{\bm{A}t} = \displaystyle \sum_{k = 0}^{n - 1} c_k(t) \bm{A}^k\)
+
+  \begin{flalign*}
+    e^{\bm{A}t}\bm{B}
+    &= \sum_{k = 0}^{n - 1} c_k(t) \bm{A}^k\bm{B}
+    &\\
+    &= \begin{bmatrix} \bm{B} & \bm{A}\bm{B} & \cdots & \bm{A}^{n - 1}\bm{B}\end{bmatrix}
+    \begin{bmatrix}
+      c_1(t)
+    \end{bmatrix}
+  \end{flalign*}
+
+  \pagebreak
+
+  \subsubsection{PCH Test For Controllability}
+
+  \textbf{Theorem:}
+
+  \(\mathcal{C}\) is full row rank \(\iff \begin{bmatrix} \bm{A} - \lambda\bm{I}_n & \bm{B} \end{bmatrix}\)
+  is full row rank where \(\lambda \in \spec{\bm{A}}\)
+
+  \vspace{12pt}
+
+  \textbf{Proof} \implies:
+
+  Suppose \(\mathcal{C}\) is full row rank but \(\begin{bmatrix} \bm{A} - \lambda\bm{I}_n & \bm{B} \end{bmatrix}\)
+  is not full row rank.
+
+  \(\exists \lambda \in \spec{\bm{A}} :
+  \vect{v} \begin{bmatrix} \bm{A} - \lambda\bm{I}_n & \bm{B} \end{bmatrix} = \vect{0}\)
+
+  \(\implies \vect{v}\bm{A} = \lambda\vect{v}\) and \(\vect{v}\bm{B} = \vect{0}\)
+  \begin{flalign*}
+    \vect{v} \begin{bmatrix} \bm{B} & \bm{A}\bm{B} & \cdots & \bm{A}^{n - 1}\bm{B}\end{bmatrix}
+    &= \begin{bmatrix} \vect{v}\bm{B} & \vect{v}\bm{A}\bm{B} & \cdots & \vect{v}\bm{A}^{n - 1}\bm{B}\end{bmatrix}
+    &\\
+    &= \begin{bmatrix} \vect{v}\bm{B} & \vect{v}\bm{A}\bm{B} & \cdots & \vect{v}\bm{A}^{n - 1}\bm{B}\end{bmatrix}
+    &\\
+    &= \begin{bmatrix} \vect{0} & \lambda\vect{v}\bm{B} & \cdots & \lambda^{n - 1}\vect{v}\bm{B}\end{bmatrix}
+    &\\
+    &= \vect{0}
+  \end{flalign*}
+  So \(\exists \vect{v} \neq \vect{0} : \vect{v}\mathcal{C} = \vect{0}\), which contradicts our assumption that
+  \(\mathcal{C}\) is full row rank.
+
+  \vspace{12pt}
+  \textbf{Proof} \impliedby:
+
+  We'll prove the contrapositive. \(\mathcal{C}\) is not full row rank
+  \(\implies \begin{bmatrix} \bm{A} - \lambda\bm{I}_n & \bm{B} \end{bmatrix}\) is not full row rank
+
+  When \(\mathcal{C}\) is not full row rank, under a specific set of coordinates for the state space,
+  \(\bm{A}\) and \(\bm{B}\) into
+
+  \(\tilde{\bm{A}} = \bm{P}^{-1}\bm{A}\bm{P} =
+  \begin{bmatrix}
+    \bm{A}_{c} & \tilde{\bm{A}}_{12} \\
+    0 & \tilde{\bm{A}}_{22}
+  \end{bmatrix}\),
+  \(\tilde{\bm{B}} = \bm{P}\bm{B} =
+  \begin{bmatrix}
+    \tilde{\bm{B}}_c \\
+    0
+  \end{bmatrix}\)
+
+  Recall that controllability is invariant under state space transformations, thus we can check
+  apply the PCH test on the transformed state space.
+
+  \(\begin{bmatrix} \tilde{\bm{A}} - \lambda\bm{I} & \tilde{\bm{B}} \end{bmatrix} =
+  \begin{bmatrix}
+    \tilde{\bm{A}_c} - \lambda\bm{I} & \tilde{\bm{A}}_{12} & \tilde{\bm{B}}_c \\
+    0 & \tilde{\bm{A}}_c - \lambda\bm{I} & 0
+  \end{bmatrix}\)
+
+  Notice if we select \(\vect{v} : \vect{v}\bm{A} = \lambda\vect{v}\)
+
+  \(\vect{v}\begin{bmatrix} \tilde{\bm{A}} - \lambda\bm{I} & \tilde{\bm{B}} \end{bmatrix} =
+  \vect{v}\begin{bmatrix}
+    \tilde{\bm{A}_c} - \lambda\bm{I} & \tilde{\bm{A}}_{12} & \tilde{\bm{B}}_c \\
+    0 & \tilde{\bm{A}}_c - \lambda\bm{I} & 0
+  \end{bmatrix} = [0]\)
+
+  So \(\begin{bmatrix} \tilde{\bm{A}} - \lambda\bm{I} & \tilde{\bm{B}} \end{bmatrix}\) is not full row rank.
+
 
   \pagebreak
 
