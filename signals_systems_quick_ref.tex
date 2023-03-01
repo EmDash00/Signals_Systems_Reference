@@ -30,7 +30,7 @@
 
 \usepackage{surround}
 \usepackage{emnotation}
-
+\setcounter{MaxMatrixCols}{20}
 \setcounter{secnumdepth}{4}
 \setcounter{tocdepth}{5}
 
@@ -1908,21 +1908,15 @@
   How big can \(\mathcal{R}_v\) get? Recall the Caley-Hamilton theorem.
 
   \(\charc{\bm{A}}(\bm{A}) = [0]\). Thus we can see that a linear combination of \(\bm{A}, \dots, \bm{A}^n\) are
-  not linearly independent.
+  not linearly independent. Thus the biggest the rank can get is \(n\). This means that
+  an input function defined for n epochs will let you access the entire reachable subspace.
 
   \vspace{12pt}
 
-  Thus we can see:
-
-  \(\rank(\mathcal{C}_{\nu}) =
-  \begin{cases}
-     \nu \IF \nu < n \\
-     n \IF \nu \ge n \\
-  \end{cases}\)
-
   \textbf{Definition}: Controllability Matrix
 
-  \(\mathcal{C} := \begin{bmatrix} \bm{B} & \bm{AB} & \dots & \bm{A}^{n - 1}\bm{B}\end{bmatrix}\)
+  \(\mathcal{C} := \begin{bmatrix} \bm{B} & \bm{AB} & \dots & \bm{A}^{n - 1}\bm{B}\end{bmatrix}\),
+  \(\mathcal{C} \in \mathbb{R}^{n \times np}\)
 
   The system is controllable iff \(\rank(\mathcal{C}) = n\)
 
@@ -1947,30 +1941,32 @@
   \end{flalign*}
   \begin{flalign*}
     \vect{x}(t)
-    &= e^{\bm{A}t}\vect{x}_0 + \int_{0}^{t} e^{\bm{A}\tau}\bm{B}u(t - \tau)\, d\tau
+    &= e^{\bm{A}t}\vect{x}_0 + \int_{0}^{t} e^{\bm{A}\tau}\bm{B}\vect{u}(t - \tau)\, d\tau
     &\\
-    &= e^{\bm{A}t}\vect{x}_0 + \int_{0}^{t} \prn{\sum_{k = 0}^{n} c_k(\tau) \bm{A}^k}\bm{B}u(t - \tau)\, d\tau
+    &= e^{\bm{A}t}\vect{x}_0 + \int_{0}^{t} \prn{\sum_{k = 0}^{n} c_k(\tau) \bm{A}^k}\bm{B}\vect{u}(t - \tau)\, d\tau
     &\\
     &= e^{\bm{A}t}\vect{x}_0 +
     \sum_{k = 0}^{n - 1}\bm{A}^k\bm{B}
-    \int_{0}^{t} c_k(\tau) u(t - \tau)\, d\tau
+    \int_{0}^{t} c_k(\tau) \vect{u}(t - \tau)\, d\tau
     &\\
     &= e^{\bm{A}t}\vect{x}_0 +
     \underbrace{\begin{bmatrix} \bm{B} & \bm{AB} & \dots & \bm{A}^{n - 1}\bm{B}\end{bmatrix}}_{\mathcal{C}}
     \begin{bmatrix}
-      \displaystyle \int_{0}^{t} c_1(\tau) u(t - \tau)\, d\tau  \\
+      \displaystyle \int_{0}^{t} c_1(\tau) \vect{u}(t - \tau)\, d\tau  \\
       \vdots \\
-      \displaystyle \int_{0}^{t} c_{n - 1}(\tau) u(t - \tau)\, d\tau  \\
+      \displaystyle \int_{0}^{t} c_{n - 1}(\tau) \vect{u}(t - \tau)\, d\tau  \\
     \end{bmatrix}
    &\\
     &= e^{\bm{A}t}\vect{x}_0 +
     \mathcal{C}
     \begin{bmatrix}
-      \displaystyle \int_{0}^{t} c_1(\tau) u(t - \tau)\, d\tau  \\
+      \displaystyle \int_{0}^{t} c_1(\tau) \vect{u}(t - \tau)\, d\tau  \\
       \vdots \\
-      \displaystyle \int_{0}^{t} c_{n - 1}(\tau) u(t - \tau)\, d\tau  \\
+      \displaystyle \int_{0}^{t} c_{n - 1}(\tau) \vect{u}(t - \tau)\, d\tau  \\
     \end{bmatrix}
   \end{flalign*}
+
+  We assume that the functions \(c_k(t) \neq 0\ \forall t\)
 
   Notice that reachability in continuous time only depends on \(\mathcal{C}\). Given a large enough
   input vector, we can reach any state that is in \(\img{\mathcal{C}}\), so once again, the system
@@ -1978,7 +1974,7 @@
 
   \pagebreak
 
-  There is also another context in which the controllability shows up in continuous time.
+  There is a simpler way of deriving the controllability matrix shown below.
 
   \(\dot{\vect{x}} = \bm{A}\vect{x} + \bm{B}\vect{u}\)
 
@@ -2017,7 +2013,143 @@
   \vect{x}^{n} - \bm{A}^{n}\vect{x}\)
 
   If \(\mathcal{C}\) is full rank (that is, the system is controllable), we can make the right hand side
-  (the state derivatives of power \(n\)) anything we want.
+  (the state derivatives of power \(n\)) anything we want. This is analogous to being able to
+  fully specify the state with an input.
+
+  \pagebreak
+
+  \subsubsection{Controllability Indicies}
+
+  Recall that \(\bm{B} \in \mathbb{R}^{n \times p}\) maps the p inputs to the n states of the system.
+
+  Let's express \(\bm{B} = \begin{bmatrix} \vect{b}_1 & \cdots & \vect{b}_{p}\end{bmatrix}\)
+
+  Now we can rewrite the controllability matrix as:
+  \begin{flalign*}
+    \mathcal{C}
+    &= \begin{bmatrix} \bm{B} & \bm{AB} & \cdots & \bm{A}^{n - 1}\bm{B} \end{bmatrix}
+    &\\
+    &= \begin{bmatrix}
+      \ \ \vect{b}_1 & \cdots & \vect{b}_p &
+      \Big\vert & \bm{A}\vect{b}_1 & \cdots & \bm{A}\vect{b}_p & \Big\vert & \cdots & \Big\vert &
+      \bm{A}^{n - 1}\vect{b}_1 & \cdots & \bm{A}^{n - 1}\vect{b}_p \ \
+    \end{bmatrix}
+  \end{flalign*}
+
+  \textbf{Lemma}:
+
+  If \(\bm{A}^{\mu}\vect{b}_{i}\) is linearly dependent on left hand side columns, then so is
+  \(\bm{A}^{\mu + 1}\vect{b}_i\).
+
+  \textbf{Proof}:
+
+  Suppose \(\bm{A}^{\mu}\vect{b}_{m}\) is linearly dependent on left hand side columns. That means
+  we can write:
+
+  \(\bm{A}^{\mu}\vect{b}_m = \displaystyle
+  \sum_{k = 0}^{\mu - 1}\sum_{i = 0}^{p} c_{ik}\bm{A}^k\vect{b}_i\)
+  \begin{flalign*}
+    \bm{A}^{\nu + 1}\vect{b}_m
+    &= \bm{A}\sum_{k = 0}^{\mu}\sum_{i = 0}^{p} c_{ik}\bm{A}^k\vect{b}_i
+    &\\
+    &= \sum_{k = 0}^{\mu - 1}\sum_{i = 0}^{p} c_{ik}\bm{A}^{k + 1}\vect{b}_i
+    &\\
+    &= \sum_{k = 1}^{\mu}\sum_{i = 0}^{p} c_{ik}\bm{A}^{k}\vect{b}_i
+  \end{flalign*}
+  ---
+
+  This lemma means we can group columns of \(\bm{A}^k\bm{b}_m\) like so:
+
+  \(\underbrace{\vect{b}_i,\ \bm{A}\vect{b}_i,\ \dots,\ \bm{A}^{\mu - 1}\vect{b}_mi\ }_{\textrm{Linearly independent}} \big\vert\
+  \underbrace{\bm{A}^{\mu}\vect{b}_i,\ \dots,\ \bm{A}^{n - 1}\vect{b}_i}_{\textrm{Linearly dependent on LHS}}\)
+
+  So each \(\vect{b}_i\) is associated with \(\mu_i\) linearly independent columns of \(\mathcal{C}\). These
+  \(\mu_i\) are called controllability indicies.
+
+  It follows that \(\rank(\mathcal{C}) = \displaystyle \sum_{m = 1}^p \mu_m\)
+
+  \textbf{Definition: Controllability Index}
+
+  \(\mu := \displaystyle \max \brc{\mu_m}_{m = 1}^p\)
+
+  \pagebreak
+
+  \textbf{Theorem: Redundant Control Modes}
+
+  The controllability index shows we don't need all columns of the controllability matrix. Now we show this.
+  First let's order the controllability from least to greatest so that \(\mu_p = \mu\)
+
+  \(\mathcal{C} =
+  \begin{bmatrix}
+    \bm{B} &
+    \bm{AB} & \cdots &
+    \bm{A}^{\mu_1}\bm{B} & \cdots &
+    \bm{A}^{\mu}\bm{B} & \cdots &
+    \bm{A}^{n - 1}\bm{B}
+  \end{bmatrix}\)
+
+  \(\bm{A}^{\mu}\bm{B}\) contains all the linearly independent columns of \(\bm{A}^k\bm{b}_m\) implied by
+  all the other controllability indices (since they require powers of \(\bm{A}\) less than \(\mu\)). This means:
+
+  \(\rank\prn{\begin{bmatrix} \bm{B} & \bm{AB} & \cdots & \bm{A}^\mu\bm{B}\end{bmatrix}} = \rank(\mathcal{C})\).
+
+  ---
+
+  \textbf{Theorem: Controllability Index Bounds}
+
+  We'll start by assuming \(\rank(\mathcal{C}) = n\).
+
+  \vspace{12pt}
+
+  Lower bound:
+
+  The smallest possible \(\mu\) happens when all the \(\mu_m\) are the same. In which case:
+
+  \(\displaystyle \sum_{i = 0}^p \mu_m = p\mu_{\textrm{min}} = n\)
+
+  \(\implies \mu_{\textrm{min}} = \frac{n}{p}\)
+
+  \vspace{12pt}
+
+  Upper bound 1:
+
+  If all the \(\mu_m\) are 1 except \(\mu\), then we have
+
+  \(\displaystyle \sum_{i = 0}^p \mu_m = \mu_{\textrm{max}} + p - 1 = n\)
+
+  \(\implies \mu_{\textrm{max}} = n - p + 1\)
+
+  \vspace{12pt}
+
+  Upper bound 2:
+
+  We can also generate a tigher upper bound by using the on the minimal polynomial.
+
+  Let \(\deg{\minpoly{\bm{A}}(\lambda)} = \tilde{n}\).
+
+  \(\minpoly{\bm{A}}(\bm{A}) = \displaystyle
+  \bm{A}^{\tilde{n}} + \sum_{k = 0}^{\tilde{n} - 1} c_k\bm{A}^k = [0]\)
+
+  \(\implies \bm{A}^{\tilde{n}} = \displaystyle \sum_{k = 0}^{\tilde{n} - 1} c_k\bm{A}^k\) (the \(c_k\) are arbitrary so I can
+  drop the sign from the subtraction)
+
+  \vspace{12pt}
+
+  Thus we have the bounds:
+
+  \(\frac{n}{p} \le \mu \le \min\brc{n - p + 1,\ \deg{\minpoly{\bm{A}}}(\lambda)}\)
+
+  \pagebreak
+
+
+  \textbf{Corollary: Reduced Controllability}
+
+  We can use \(\mu\) to reduce the number of columns we need to check for controllability. The maximum bound using
+  the minimal polynial can be somewhat hard to find, so we'll estimate \(\mu \le n - p + 1\)
+
+  Thus the system is controllable iff:
+
+  \(\rank\prn{\begin{bmatrix} \bm{B} & \bm{AB} & \cdots & \bm{A}^{n - p}\bm{B}\end{bmatrix}} = n\).
 
   \subsubsection{Controllability is Coordinate Independent}
 
@@ -2052,9 +2184,13 @@
     &\\
     &= \bm{P}\mathcal{C}_{\mathcal{B}}
   \end{flalign*}
-  But since \(\bm{P}\) is a change of basis matrix, it must be invertible.
+  But since \(\bm{P}\) is a change of basis matrix, it must be invertible. Invertible matrices
+  can expressed as a sequence of elementary row operations
+  \(\bm{P} = \displaystyle \prod_{k = 0}^{\nu} \bm{E}_k\) where \(\bm{E}_k\).
 
-  \(\implies \rank(\mathcal{C}) = \rank(\bm{P}\mathcal{C}_{\mathcal{B}}) = \rank(\mathcal{C}_{\mathcal{B}})\)
+  Since row operations do not change rank we have:
+
+  \(\rank(\mathcal{C}) = \rank(\bm{P}\mathcal{C}_{\mathcal{B}}) = \rank(\mathcal{C}_{\mathcal{B}})\)
 
   \pagebreak
 
@@ -2138,7 +2274,7 @@
     &\\
     &= \begin{bmatrix} \bm{M} & \tilde{\bm{M}}\end{bmatrix}
     \begin{bmatrix}
-      \bm{A}_{11} & \bm{A}_{12} \\
+      \bm{X} & \bm{A}_{12} \\
       0 & \bm{A}_{22}
     \end{bmatrix}
   \end{flalign*}
@@ -2170,6 +2306,9 @@
     \bm{B}_c  & \bm{B}_c\bm{A}_{c} & \cdots & \bm{A}_{c}^{n - 1}\bm{B}_c \\
     0 & 0 & \cdots & 0
   \end{bmatrix}\)
+
+  In general we can select the first \(n\) linearly independent columns of \(\mathcal{C}\) and
+  then any \(n - k\) columns of \(\mathcal{C}\) so that \(\bm{M}\) is invertible.
 
   \pagebreak
 
@@ -2433,11 +2572,8 @@
   give these systems a little kick, their instability will carry you to the destination.
 
   The quantity \(\bm{W}_c\) is called the controllability \href{https://www.wikiwand.com/en/Gram_matrix}{Grammian}.
-  Grammians (or Gram matrices) are
-  quantities given by \(\bm{A}^\H\bm{A}\) where \(\bm{A} \in \mathbb{R}^{n \times n}\). They are hermitian
-  positive semidefinite and capture many intrinsic geometric properties of a space.
-
-  The integration in the controllability Grammian may seem familiar if you recall the last section
+  The integration in
+  \(\bm{W}_c(t)\) may seem familiar if you recall the last section
   on Lyapanov functions. Indeed we can see that \(\bm{W}_c(t_f)\) is given by the solution to the
   Sylvester equation:
 
@@ -2445,25 +2581,38 @@
 
   \vspace{12pt}
 
-  \textbf{Theorem:} \(\rank(\bm{W}_c) = \rank(\mathcal{C})\)
+  \textbf{Proposition:} \(\img{\bm{W}_c(t)} = \img{\mathcal{C}}\)
 
-  Consider \(e^{\bm{A}t}\bm{B}\). Recall from that due to Caley-Hamilton we can represent:
+  \textbf{Proof}:
 
-  \(e^{\bm{A}t} = \displaystyle \sum_{k = 0}^{n - 1} c_k(t) \bm{A}^k\)
+  We know from linear algebra \(\img{\bm{A}\bm{A}^\T} = \img{\bm{A}}\)
 
+  \(\implies \img{e^{\bm{A}t}\bm{B}} = \img{e^{\bm{A}t}\bm{B}\bm{B}^\T e^{\bm{A}^\T t}}\)
+
+  Now we can write:
   \begin{flalign*}
-    e^{\bm{A}t}\bm{B}
-    &= \sum_{k = 0}^{n - 1} c_k(t) \bm{A}^k\bm{B}
+    \img{\int_0^t e^{\bm{A}\tau}\bm{B} \bm{B}^\T\e^{\bm{A}^\T\tau}\vect{u}\,d\tau}
+    &= \img{\int_0^t e^{\bm{A}\tau}\bm{B} \vect{u}\,d\tau}
     &\\
-    &= \begin{bmatrix} \bm{B} & \bm{A}\bm{B} & \cdots & \bm{A}^{n - 1}\bm{B}\end{bmatrix}
+    &= \img{\int_0^t \prn{\sum_{k = 0}^{n - 1}c_k(t)\bm{A}^k}\bm{B} \vect{u}\,d\tau}
+    &\\
+    &= \img{\sum_{k = 0}^{n - 1}\bm{A}^k\bm{B} \int_0^t c_k(t) \vect{u}\,d\tau}
+    &\\
+    &= \img{\underbrace{\begin{bmatrix} \bm{B} & \bm{AB} & \cdots & \bm{A}^{n - 1}\bm{B}\end{bmatrix}}_{\mathcal{C}}
     \begin{bmatrix}
-      c_1(t)
-    \end{bmatrix}
+      \displaystyle \int_{0}^{t} c_1(\tau) \vect{u}\, d\tau  \\
+      \vdots \\
+      \displaystyle \int_{0}^{t} c_{n - 1}(\tau) \vect{u}\, d\tau  \\
+    \end{bmatrix}}
+    &\\
+    &= \img{\mathcal{C}}
   \end{flalign*}
 
-  \pagebreak
+  \textbf{Corollary:}
 
-  \subsubsection{PCH Test For Controllability}
+  \(\rank(\bm{W}_c(t)) = n\ \forall t \iff (\bm{A}, \bm{B})\) is controllable.
+
+  \subsubsection{PBH Test For Controllability}
 
   \textbf{Theorem:}
 
@@ -2533,6 +2682,547 @@
 
   So \(\begin{bmatrix} \tilde{\bm{A}} - \lambda\bm{I} & \tilde{\bm{B}} \end{bmatrix}\) is not full row rank.
 
+  \pagebreak
+
+  \subsection{Observability}
+
+  \textbf{Definition: Observability}
+
+  A system is said to be observable iff:
+
+  \(\exists t_f \in \mathbb{R}_+ : \vect{y}([0, t_f])\) and
+  \(\vect{u}([0, t_f])\) uniquely determine \(\vect{x}_0\)
+
+  ---
+
+
+  The observability analysis is quite similar to the controllability
+  analysis. We once again start in discrete time.
+
+  \subsubsection{Discrete Time Observability}
+
+  Recall from the controllability analysis we had:
+
+  \(\vect{x}[\nu] = \bm{A}^{\nu}\vect{x}[0] +  \displaystyle
+  \sum_{k = 0}^{\nu - 1} \bm{A}^{\nu - k - 1}\bm{B}\vect{u}[k]\)
+
+  \vspace{12pt}
+  The output is given by:
+  \begin{flalign*}
+    \vect{y}[\nu]
+    &= \bm{C}\vect{x}[\nu] + \bm{D}\vect{u}[\nu]
+    &\\
+    &= \bm{C}\prn{\bm{A}^{\nu}\vect{x}[0] +
+    \sum_{k = 0}^{\nu - 1} \bm{A}^{\nu - k - 1}\bm{B}\vect{u}[k]} +
+    \bm{D}\vect{u}[\nu]
+    &\\
+    &= \bm{C}\bm{A}^{\nu}\vect{x}[0] +
+    \bm{C}\sum_{k = 0}^{\nu - 1} \bm{A}^{\nu - k - 1}\bm{B}\vect{u}[k] +
+    \bm{D}\vect{u}[\nu]
+  \end{flalign*}
+  Thus we have:
+
+  \(\underbrace{\begin{bmatrix}
+    \bm{C} \\
+    \bm{C}\bm{A} \
+    \vdots \\
+    \bm{C}\bm{A}^{\nu}
+  \end{bmatrix}}_{\mathcal{O}_\nu}\vect{x}[0] +
+  \underbrace{\begin{bmatrix}
+    \bm{D} & 0 & 0 & \cdots & 0\\
+    \bm{C}\bm{B} & \bm{D} & & & \vdots \\
+    \bm{C}\bm{A}\bm{B} & \bm{C}\bm{B} & \bm{D} \\
+    \vdots & & \ddots & \ddots & 0 \\
+    \bm{C}\bm{A}^{\nu - 1}\bm{B} & \bm{C}\bm{A}^{\nu - 2}\bm{B} & \cdots &
+    \bm{CB} & \bm{D}
+  \end{bmatrix}}_{\mathcal{T}_{\nu}}
+  \begin{bmatrix}
+    \vect{u}[0] \\
+    \vdots \\
+    \vect{u}[\nu]
+  \end{bmatrix} =
+  \begin{bmatrix}
+    \vect{y}[0] \\
+    \vdots \\
+    \vect{y}[\nu] \\
+  \end{bmatrix}\)
+
+  \(\mathcal{O}_{\nu}\vect{x}[0] +
+  \mathcal{T}_{\nu}
+  \begin{bmatrix}
+    \vect{u}[0] \\
+    \vdots \\
+    \vect{u}[\nu]
+  \end{bmatrix} =
+  \begin{bmatrix}
+    \vect{y}[0] \\
+    \vdots \\
+    \vect{y}[\nu] \\
+  \end{bmatrix}\)
+
+  Thus we have:
+
+  \(\mathcal{O}_{\nu}\vect{x}[0] =
+  \begin{bmatrix}
+    \vect{y}[0] \\
+    \vdots \\
+    \vect{y}[\nu] \\
+  \end{bmatrix} -
+  \mathcal{T}_{\nu}
+  \begin{bmatrix}
+    \vect{u}[0] \\
+    \vdots \\
+    \vect{u}[\nu]
+  \end{bmatrix}\)
+
+  \pagebreak
+
+  We can see that the input doesn't affect the observability, only the matrix \(\mathcal{O}_{\nu}\).
+
+  Once again, we'll see the rank max out at \(\nu = n\). Due to the Caley-Hamilton Theorem. As we
+  increase \(\nu\) we'll find that the initial state can be constrained along a smaller number of dimensisons.
+  This corresponds to  the dimension of the kernel of \(\mathcal{O}_{\nu}\) getting smaller
+  and smaller.
+
+  Moreover, we can see that the maximal rank of \(\mathcal{O}_{\nu}\) occurs when \(\nu = n\). This means the
+  most information we can extract is through \(n\) observations in discrete time.
+
+  \vspace{12pt}
+
+  \textbf{Definition: Observability Matrix}
+
+  \(\mathcal{O} := \begin{bmatrix} \bm{A} \\ \bm{CA} \\ \vdots \\ \bm{C}\bm{A}^{n - 1}\end{bmatrix}\),
+  \(\mathcal{O} \in \mathbb{R}^{mn \times n}\)
+
+  The system is observable iff \(\nullity{\mathcal{O}} = 0\)
+
+  \textbf{Definition: Input Transmission Matrix}
+
+  Note: This matrix has no official name that I could find. This is a custom name I've given it.
+
+  \(\mathcal{T} :=
+  \begin{bmatrix}
+    \bm{D} & 0 & 0 & \cdots & 0\\
+    \bm{C}\bm{B} & \bm{D} & & & \vdots \\
+    \bm{C}\bm{A}\bm{B} & \bm{C}\bm{B} & \bm{D} \\
+    \vdots & & \ddots & \ddots & 0 \\
+    \bm{C}\bm{A}^{n - 1}\bm{B} & \bm{C}\bm{A}^{n - 2}\bm{B} & \cdots &
+    \bm{CB} & \bm{D}
+  \end{bmatrix}\), \(\mathcal{T} \in \mathbb{R}^{mn \times np}\)
+
+  \subsubsection{Continuous Time Observability}
+
+  We'll use the derivative as the analog for timesteps in discrete time as in the alternate proof of the
+  controllability matrix.
+
+  Reusing the results from the controllability analysis:
+  \begin{flalign*}
+    \vect{y}(0)^{(\nu)}
+    &= \bm{C}\vect{x}(0)^{(\nu)} + \bm{D}\vect{u}(0)^{(\nu)}
+    &\\
+    &= \bm{C}\prn{\bm{A}^{\nu}\vect{x}(0) +
+    \sum_{k = 0}^{\nu - 1} \bm{A}^{\nu - k - 1}\bm{B} \vect{u}^{(k)}}(0) + \bm{D}\vect{u}^{(\nu)}(0)
+    &\\
+    &= \bm{C}\bm{A}^{\nu}\vect{x}(0) + \bm{C}\sum_{k = 0}^{\nu - 1} \bm{A}^{\nu - k - 1}\bm{B} \vect{u}^{(k)}(0) +
+    \bm{D}\vect{u}^{(\nu)}(0)
+  \end{flalign*}
+  So we have:
+
+  \(\begin{bmatrix}
+    \bm{C} \\
+    \bm{CA} \\
+    \vdots \\
+    \bm{C}\bm{A}^{\nu} \\
+  \end{bmatrix}\vect{x}(0) +
+  \begin{bmatrix}
+    \bm{D} & 0 & 0 & \cdots & 0\\
+    \bm{C}\bm{B} & \bm{D} & & & \vdots \\
+    \bm{C}\bm{A}\bm{B} & \bm{C}\bm{B} & \bm{D} \\
+    \vdots & & \ddots & \ddots & 0 \\
+    \bm{C}\bm{A}^{\nu - 1}\bm{B} & \bm{C}\bm{A}^{\nu - 2}\bm{B} & \cdots &
+    \bm{CB} & \bm{D}
+  \end{bmatrix}
+  \begin{bmatrix}
+    \vect{u}^{(\nu)}(0) \\
+    \vdots \\
+    \vect{u}(0) \\
+  \end{bmatrix} =
+  \begin{bmatrix}
+    \vect{y}(0) \\
+    \vdots \\
+    \vect{y}^{(\nu)}(0)
+  \end{bmatrix}\)
+
+  But due to the Caley-Hamilton theorem, we once again we only need to go up to n derivatives.
+
+  \(\mathcal{O}\vect{x}(0) + \mathcal{T}
+  \begin{bmatrix}
+    \vect{u}^{(\nu)}(0) \\
+    \vdots \\
+    \vect{u}(0) \\
+  \end{bmatrix} =
+  \begin{bmatrix}
+    \vect{y}(0) \\
+    \vdots \\
+    \vect{y}^{(\nu)}(0)
+  \end{bmatrix}\)
+
+  \(\mathcal{O}\vect{x}(0) =
+  \begin{bmatrix}
+    \vect{y}(0) \\
+    \vdots \\
+    \vect{y}^{(\nu)}(0)
+  \end{bmatrix} -
+  \mathcal{T}
+  \begin{bmatrix}
+    \vect{u}^{(\nu)}(0) \\
+    \vdots \\
+    \vect{u}(0) \\
+  \end{bmatrix}\)
+
+  So we get the same relationship as in discrete time.
+
+  \subsubsection{Controllability-Observability Duality}
+
+  A dual in mathematics refers to two closely related concepts that come as a pair.
+  Like the two sides of a coin, the left glove to a right glove, etc..
+
+  \(\mathcal{C}(\bm{A}^\T, \bm{C}^\T) =
+  \begin{bmatrix}
+    \bm{C}^\T & \bm{A}^\T\bm{C}^\T & \cdots & \prn{\bm{A}^\T}^{n - 1}\bm{C}^\T
+  \end{bmatrix} = \mathcal{O}^\T(\bm{A}, \bm{C})\)
+
+  \(\mathcal{O}(\bm{A}^\T, \bm{B}^\T) =
+  \begin{bmatrix}
+    \bm{B}^\T \\
+    \bm{B}^\T\bm{A}^\T \\
+    \vdots \\
+    \bm{B}^\T\prn{\bm{A}^\T}^{n - 1}
+  \end{bmatrix} = \mathcal{C}^\T(\bm{A}, \bm{B})\)
+
+  Thus we can see:
+
+  \(\mathcal{O}(\bm{A}, \bm{C})\) is observeable \(\iff \mathcal{C}^\T\prn{\bm{A}^\T, \bm{C}^\T}\) is
+  controllable
+
+  \(\mathcal{C}(\bm{A}, \bm{B})\) is observeable \(\iff \mathcal{O}^\T\prn{\bm{A}^\T, \bm{B}^\T}\) is
+  controllable
+
+  \pagebreak
+
+  \subsubsection{Observability Indicies}
+
+  If we examine linearly independent rows of \(\mathcal{O}\), we get a very similar result to the idea of
+  controllability indicies. I won't present the full proof as it's mostly a rehashing of the controllability proof.
+  Instead I'll present the results.
+
+  \(\nu_i\) is an observability index. It is number of linearly independent rows associated with a row of
+  \(\bm{C}\), called \(\tilde{\vect{c}}^\T_i\).
+
+  \(\displaystyle \sum_{i = 0}^m \nu_i = \rank(\mathcal{O})\)
+
+  \textbf{Definition: Observability Index}
+
+  \(\nu := \max \brc{\nu_i}_{i = 0}^n\)
+
+  \textbf{Bounds for the Observability Index}
+
+  Assuming \(\rank(\mathcal{O}) = n\) (equivalent to \(\nullity{\mathcal{O}} = 0\))
+
+  \(\frac{n}{m} \le \nu \le \min\brc{n - m + 1, \deg{\minpoly{\bm{A}}(\lambda)}}\)
+
+  \textbf{Corollary: Reduced Observability}
+
+  Let \(\mathcal{O}_r = \begin{bmatrix}
+    \bm{C} \\
+    \bm{C}\bm{A}  \\
+    \vdots \\
+    \bm{C}\bm{A}^{n - m}
+  \end{bmatrix}\)
+
+  \((\bm{A}, \bm{C})\) is observable iff:
+
+  \(\rank(\mathcal{O}_r) = n\)
+
+  or equivalently:
+
+  \(\nullity{\mathcal{O}_r^\H\mathcal{O}_r} = 0\)
+
+  \pagebreak
+
+  \subsubsection{The Observeable and Unobserveable Subspace}
+
+  Another type of invariant subspace can come in lower triangular matrices:
+
+  \(\bm{A} =
+  \begin{bmatrix}
+    \bm{A}_{11} & 0 \\
+    \bm{A}_{21} & \bm{A}_{22}
+  \end{bmatrix}\) where \(\bm{A}_{22} \in \mathbb{R}^{r \times r}\)
+
+  Clearly \(V = \brc{\left.\begin{bmatrix} 0 \\ \vect{v}_r \end{bmatrix} \right\vert \vect{z} \in \mathbb{R}^r}\)
+  is an invariant subspace.
+
+  \textbf{Theorem:} The Unobserveable Subspace is A-invariant
+
+  \textbf{Proof:}
+
+  Let \(\mathcal{O}\vect{v} = \vect{0}\)
+  \begin{flalign*}
+    \mathcal{O}\bm{A}\vect{v}
+    &= \begin{bmatrix}
+      \bm{C} \\
+      \bm{C}\bm{A} \\
+      \vdots \\
+      \bm{C}\bm{A}^{n - 1}
+    \end{bmatrix}\bm{A}\vect{v}
+    &\\
+    &= \begin{bmatrix}
+       \bm{C}\bm{A}\vect{v} \\
+      \bm{C}\bm{A}^2\vect{v} \\
+      \vdots \\
+      \bm{C}\bm{A}^{n}\vect{v}
+    \end{bmatrix}\ \ \ \ \textrm{ We use Caley-Hamilton Theorem again to rewrite } \bm{A}^n
+    &\\
+    &= \begin{bmatrix}
+      \cancelto{\vect{0}}{\bm{C}\bm{A}\vect{v}} \\
+      \cancelto{\vect{0}}{\bm{C}\bm{A}^2\vect{v}} \\
+      \vdots \\
+      \displaystyle \sum_{k = 0}^{n - 1} \textstyle c_k\cancelto{\vect{0}}{\bm{C}\bm{A}^k\vect{v}}
+    \end{bmatrix}
+    &\\
+    &= \vect{0}
+  \end{flalign*}
+
+  Define \(\bm{M}\) as in the controllable subspace decomposition. We'll get the same Sylvester Equation
+
+  \(\bm{A}\bm{M} = \bm{M}\bm{X}\)
+
+  Define \(\tilde{M}\) in the same manner as in the controllable subspace case.
+
+  Consider:
+  \begin{flalign*}
+    \bm{A}\begin{bmatrix} \tilde{\bm{M}} & \bm{M}\end{bmatrix}
+    &= \begin{bmatrix} \bm{A}\tilde{\bm{M}} & \bm{A}\bm{M}\end{bmatrix}
+    &\\
+    &= \begin{bmatrix} \bm{A}\tilde{\bm{M}} & \bm{M}\bm{X}\end{bmatrix}
+    &\\
+    &= \begin{bmatrix} \tilde{\bm{M}} & \bm{M}\end{bmatrix}
+    \begin{bmatrix}
+      \bm{A}_{11} & 0 \\
+      \bm{A}_{12} & \bm{X} \\
+    \end{bmatrix}
+  \end{flalign*}
+  where \(\begin{bmatrix} \bm{A}_{11} \\ \bm{A}_{12} \end{bmatrix} =
+  \begin{bmatrix}
+    \tilde{\bm{M}} & \bm{M}
+  \end{bmatrix}^{-1}\bm{A}\tilde{\bm{M}}\)
+
+  So if we have \(\bm{P} = \begin{bmatrix} \tilde{\bm{M}} & \bm{M}\end{bmatrix}\)
+
+  \(\bm{P}^{-1}\bm{A}\bm{P} =
+  \begin{bmatrix}
+    \bm{A}_{o} & 0 \\
+    \bm{A}_{12} & \bm{A}_{uo}
+  \end{bmatrix}\),
+  \(\bm{P}^{-1}\bm{B} = \begin{bmatrix} \bm{B}_{o} \\ \bm{B}_{uo} \end{bmatrix}\),
+  \(\bm{C}\bm{P} = \begin{bmatrix} \bm{C}_{o} & 0 \end{bmatrix}\)
+
+  \(\mathcal{O}\bm{P} =
+  \begin{bmatrix}
+    \bm{C}_{o} & 0 \\
+    \bm{C}_{o}\bm{A}_{o} & 0 \\
+    \vdots & \vdots \\
+    \bm{C}_{o}\bm{A}_{o}^{n - 1} & 0
+  \end{bmatrix}\)
+
+  \pagebreak
+
+  \subsubsection{Least Squares Observers}
+
+  This is dual to the least norm controller.
+
+  \textbf{Discrete Time, Finite Time Horizon}
+
+  Consider the discrete time system with sensor noise modeled by \(\vect{v}[k] \sim \mathcal{N}(0, \sigma\bm{I})\):
+
+  \(\vect{x}[\nu + 1] = \bm{A}\vect{x}[\nu] + \bm{B}\vect{u}[\nu]\)
+
+  \(\vect{y}[\nu] = \bm{C}\vect{x}[\nu] + \bm{D}\vect{u}[\nu] + \vect{v}[\nu]\)
+
+  We can no longer simply invert the observability matrix; however, we can still make
+  the best estimate by minimizing the square error using least squares.
+
+  Let \(\mathcal{O}\) be observable. In that case we have \(\mathcal{O}^+ = \prn{\mathcal{O}^\T\mathcal{O}}^{-1}\mathcal{O}^\T\)
+
+ \(\hat{\vect{x}}[0] = \mathcal{O}^+
+  \prn{\begin{bmatrix}
+    \vect{y}[0] \\
+    \vdots \\
+    \vect{y}[\nu] \\
+  \end{bmatrix} -
+  \mathcal{T}_{\nu}
+  \begin{bmatrix}
+    \vect{u}[0] \\
+    \vdots \\
+    \vect{u}[\nu]
+  \end{bmatrix}}\)
+
+  Expanding out the pseudoinverse of the observability matrix we get:
+  \begin{flalign*}
+    \hat{\vect{x}}[0]
+    &= \underbrace{\prn{\sum_{k = 0}^{\nu - 1} \prn{\bm{A}^\T}^k\bm{C}^\T\bm{C}\bm{A}^k}^{-1}}_{\bm{W}^{-1}_o[\nu]}
+    \sum_{k = 0}^{\nu - 1}\prn{\bm{A}^\T}^k\bm{C}^\T (\vect{y} - \bm{h} * \vect{u})
+    &\\
+    &= \bm{W}^{-1}_o[\nu] \sum_{k = 0}^{\nu - 1}\prn{\bm{A}^\T}^k\bm{C}^\T (\vect{y} - \bm{h} * \vect{u})
+  \end{flalign*}
+
+  The errors are given by:
+
+  \(\tilde{\vect{x}}[0] = \hat{\vect{x}}(0) - \vect{x}(0) = \mathcal{O}^+
+  \begin{bmatrix}
+    \vect{v}[0] \\
+    \vdots \\
+    \vect{v}[\nu - 1] \\
+  \end{bmatrix}\)
+
+  In general we can bound the mean square error of the process:
+
+  \(\dfrac{1}{\nu}\displaystyle\sum_{k = 0}^{\nu - 1}\norm{\vect{v}[k]}^2 \le \alpha^2\)
+
+  In which case we can see that the errors lie on some ellipsoid:
+
+  \(\tilde{\vect{x}} \in \mathcal{E}_{\textrm{unc}} =
+  \brc{\mathcal{O}^+
+  \left.\begin{bmatrix}
+    \vect{v}[0] \\
+    \vdots \\
+    \vect{v}[\nu - 1] \\
+  \end{bmatrix} \right\vert \dfrac{1}{\nu}\displaystyle\sum_{k = 0}^{\nu - 1}\norm{\vect{v}[k]}^2 \le \alpha^2}\)
+
+  Clearly the maximum norm of the error is then given by:
+
+  \(\norm{\tilde{\vect{x}(0)}} \le \alpha\sqrt{\nu}\norm{\mathcal{O}^+_t}\)
+
+  \pagebreak
+  If you've studied stochastic procceses, you might remember that:
+
+  \(\vect{X} \sim \mathcal{N}(0, \sigma\bm{I}) \implies \bm{A}\vect{X} \sim \mathcal{N}(0, \sigma\bm{A}\bm{A}^\T)\)
+
+  But notice that:
+
+  This means that the new noise is going to be drawn from:
+
+  \(\vect{z}[\nu] \sim \mathcal{N}(0, \sigma\mathcal{O}^+\prn{\mathcal{O}^+}^\T) = \mathcal{N}(0, \sigma\bm{W}_o^{-1}[\nu])\)
+
+  So \(\bm{W}_o^{-1}[\nu] = \prn{\sum_{k = 0}^{\nu - 1} \prn{\bm{A}^\T}^k\bm{C}^\T\bm{C}\bm{A}^k}^{-1}\) characterizes
+  the uncertainity in the observations.
+
+  \vspace{12pt}
+
+  \textbf{Discrete Time, Infinite Time Horizon}
+
+  In the case that \(\bm{A}\) is Hurwitz:
+
+  \(\bm{P} = \displaystyle \lim_{\nu \to \infty}
+  \prn{\sum_{k = 0}^{\nu - 1} \prn{\bm{A}^\T}^k\bm{C}^\T\bm{C}\bm{A}^k}^{-1} \)
+
+  \(\bm{P}\) gives the limiting error covariance as we add samples.
+
+  \(\bm{P} = \displaystyle
+  \lim_{\nu \to \infty}\mathbb{E}\brc{(\hat{x}(0 | \nu - 1) - \vect{x}(0))^\T(\hat{x}(0 | \nu - 1) - \vect{x}(0))}\)
+
+  If \(\bm{A}\) is Hurwitz, \(\bm{P} \succ 0\) and we can't ever perfectly estimate the initial state, even with infintely
+  many measurements. Why? Memory of the initial state fades with time as you settle towards
+  equilibrium, so there is a definitive limit to
+  how adding more information will help.
+
+  If \(\bm{A}\) isn't Hurwitz, then \(\bm{P}\) could
+  have a nonzero nullspace, so we could perfectly reconstruct our state in certain directions. Why?
+  If you're travelling along an instability route, at each time step the information you're adding is more
+  meaningful than when you're settling towards an equilibrium.
+
+  \textbf{Continuous Time, Finite Time Horizon}
+
+  \(\dot{\vect{x}} = \bm{A}\vect{x} + \bm{B}\vect{u}\),
+  \(\vect{y} = \bm{C}\vect{x} + \bm{D}\vect{u} + \vect{v}\)
+
+  Let \(\tilde{\vect{y}} = \vect{y} - \bm{h} * \vect{u}\)
+  We want to minimize:
+  \begin{flalign*}
+    J
+    &= \displaystyle
+    \int_{0}^t \norm{\tilde{\vect{y}} - \bm{C}e^{\bm{A}\tau}\vect{x}(0)}^2\, d\tau
+    &\\
+    &= \vect{x}^\T(0) \prn{\int_0^t e^{\bm{A}^\T\tau}\bm{C}^\T\bm{C}e^{\bm{A}\tau}\,d\tau} \vect{x}(0) +
+    2\prn{\int_0^t e^{\bm{A}^\T\tau}\bm{C}^\T \tilde{\vect{y}} \,d\tau}\vect{x}(0) +
+    \int_0^t  \norm{\tilde{\vect{y}}(t)}^2\, d\tau
+  \end{flalign*}
+
+  \(\D_{\vect{x}(0)}J = \displaystyle
+  2\prn{\int_0^t e^{\bm{A}^\T\tau}\bm{C}^\T\bm{C}e^{\bm{A}\tau}\,d\tau}\vect{x}(0)
+  + 2\prn{\int_0^t e^{\bm{A}^\T\tau}\bm{C}^\T \tilde{\vect{y}} \,d\tau} = 0\)
+
+  \(\displaystyle \hat{\vect{x}}(0) =
+  \prn{\int_0^t e^{\bm{A}^\T\tau}\bm{C}^\T\bm{C}e^{\bm{A}\tau}\,d\tau}^{-1}
+  \prn{\int_0^t e^{\bm{A}^\T\tau}\bm{C}^\T \tilde{\vect{y}} \,d\tau}\)
+
+  \textbf{Continuous Time, Finite Time Horizon}
+
+  \(\bm{P} = \displaystyle
+  \lim_{t \to \infty}\prn{\int_0^t e^{\bm{A}^\T\tau}\bm{C}^\T\bm{C}e^{\bm{A}\tau}\,d\tau}^{-1}\)
+
+  \pagebreak
+
+  \textbf{The Observability Grammian}
+
+  Discrete time:
+
+  \(\displaystyle \bm{W}_o = \sum_{k = 0}^{\infty} \prn{\bm{A}^\T}^k\bm{C}^\T\bm{C}\bm{A}^k\)
+
+  \vspace{12pt}
+
+  Continuous time:
+
+  \(\displaystyle \bm{W}_o = \int_0^{\infty} e^{\bm{A}^\T\tau}\bm{C}^\T\bm{C}e^{\bm{A}\tau}\,d\tau\)
+
+  \vspace{12pt}
+
+  Moreover, the observability Grammian is the solution to the LME:
+
+  \(\bm{P}\bm{A} + \bm{A}^\T\bm{P} = -\bm{C}^\T\bm{C}\)
+
+  \vspace{12pt}
+
+  \textbf{Proposition:} \(\Null{\bm{W}_o(t)} = \Null{\mathcal{O}}\)
+
+  \(\vect{y} = \displaystyle \bm{C}e^{\bm{A}t}\vect{x}_0 +
+  \bm{C}\int_0^t e^{\bm{A}(t - \tau)}\bm{B}\vect{u}(\tau)\,d\tau + \bm{D}\vect{u}(t)\)
+
+  \(\bm{C}e^{\bm{A}t}\vect{x}_0 = \displaystyle
+  \underbrace{\vect{y} - \bm{C}\int_0^t e^{\bm{A}(t - \tau)}\bm{B}\vect{u}(\tau)\,d\tau + \bm{D}\vect{u}(t)}_{\tilde{\vect{y}}}\)
+
+  \(\bm{C}e^{\bm{A}t}\vect{x}_0 = \tilde{\vect{y}}\)
+
+  \(e^{\bm{A}^\T t}\bm{C}^{\T}\bm{C}e^{\bm{A}t}\vect{x}_0 = e^{\bm{A}^\T t}\bm{C}^{\T}\tilde{\vect{y}}\)
+
+  \(\displaystyle
+  \prn{\int_0^t e^{\bm{A}^\T \tau}\bm{C}^{\T}\bm{C}e^{\bm{A}\tau}\,d\tau} \vect{x}_0=
+  \int_0^te^{\bm{A}^\T t}\bm{C}^{\T}\tilde{\vect{y}}\, d\tau\)
+
+  As desired. \(\vect{x}_0\) is uniquely determined only when \(\bm{W}_o(t)\) is invertible.
+
+  \subsubsection{PBH Test for Observability}
+
+  I won't present a proof for this one. I'm quite tired and also it follows from duality.
+
+  \(\mathcal{O}(\bm{A}, \bm{C})\) is controllable iff:
+
+  \(\forall \lambda \in \spec{\bm{A}}\ \rank\prn{
+    \begin{bmatrix}
+      \bm{A} - \lambda\bm{I} \\
+      \bm{C}
+  \end{bmatrix}} = n\)
 
   \pagebreak
 
