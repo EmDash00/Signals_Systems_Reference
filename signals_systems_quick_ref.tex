@@ -1703,10 +1703,15 @@
 
   Recall a norm with respect to a matrix is bounded by its eigenvalues times the 2 norm.
 
-  \(-\lambda_{\textrm{max}}(\bm{W}_1)\norm{\vect{x}}^2 \le
-  \dot{V}(\vect{x}) \le -\lambda_{\textrm{min}}(\bm{W}_1)\norm{\vect{x}}^2\)
 
-  \(\implies \dot{V} \le -\lambda_{\textrm{min}}(\bm{W}_1)\norm{\vect{x}}^2\)
+  \(\lambda_{\textrm{min}}(\bm{Q})\norm{\vect{x}}^2 \le
+  \dot{V}(\vect{x}) \le \lambda_{\textrm{max}}(\bm{Q})\norm{\vect{x}}^2\)
+
+
+  \(-\lambda_{\textrm{max}}(\bm{Q})\norm{\vect{x}}^2 \le
+  \dot{V}(\vect{x}) \le -\lambda_{\textrm{min}}(\bm{Q})\norm{\vect{x}}^2\)
+
+  \(\implies \dot{V} \le -\lambda_{\textrm{min}}(\bm{Q})\norm{\vect{x}}^2\)
 
   \vspace{12pt}
 
@@ -1726,8 +1731,7 @@
 
   \(\dot{V} \le -\underbrace{\dfrac{\lambda_{\textrm{min}}(\bm{Q})}{\lambda_{\textrm{max}}(\bm{P})}}_{2\alpha}V(\vect{x})\)
 
-  \(\dot{V} \le \alpha V(\vect{x})\)
-
+  \(\dot{V} \le -2\alpha V(\vect{x})\)
   \(\implies V(\vect{x}) \le e^{-2\alpha t}V_0\)
 
   So if \(\dfrac{\lambda_{\textrm{min}}(\bm{Q})}{\lambda_{\textrm{max}}(\bm{P})} > 0\), the Lyapanov function decays
@@ -1817,12 +1821,33 @@
     &\\
     &= \int_0^\infty \vect{x}_0^{\T}e^{\bm{A}^\T t} \bm{Q} e^{\bm{A} t}\vect{x}_0\, dt
     &\\
+    &= \int_0^\infty \vect{x}^{\T}(t) \bm{Q} \vect{x}(t)\, dt
+    &\\
     &= \int_0^\infty \norm{\vect{x}(t)}^2_{\bm{Q}}\, dt
   \end{flalign*}
   Thus we can see this as a form of cost to move from state \(\vect{x}_0\) to \(\vect{x}_{\textrm{eq}}\). Another
   view is this characterizes the work done passively by the system in moving from \(\vect{x}_0\)
   to \(\vect{x}_{\textrm{eq}}\). Different choices of \(\bm{Q}\), of course, will yield different values for
   how much "work" or "cost" there is.
+
+  \(\vect{x} =
+  \bm{A} \begin{bmatrix}
+    0 & 1 \\
+    -1 & -1
+  \end{bmatrix}\dot{\vect{x}}\)
+
+  Choose \(\bm{Q} =
+  \begin{bmatrix}
+    1 & 0 \\
+    0 & 2
+  \end{bmatrix}\)
+
+  \(\bm{P} = \displaystyle \int_0^\infty e^{\bm{A}^\T t}
+  \begin{bmatrix}
+    1 & 0 \\
+    0 & 2
+  \end{bmatrix}
+  e^{\bm{A} t}\, dt\)
 
   \pagebreak
 
@@ -1844,7 +1869,7 @@
   \(R_\nu := \displaystyle
   \brc{\left.\sum_{k = 0}^{\nu - 1} \bm{A}^{\nu - k - 1}\bm{B}\vect{u}[k]\ \right\vert\ \vect{u} : [0\,..\,t] \to \mathbb{R}^m}\)
 
-  Notice that \(t_2 > t_1 \implies \mathcal{R}_{t_2} \subseteq \mathcal{R}_{t_1} \)
+  Notice that \(t_2 > t_1 \implies R_{t_1} \subseteq R_{t_2} \)
 
   Intuitively this makes sense. We can reach more states given more time.
 
@@ -1861,7 +1886,7 @@
 
   \textbf{Definition}: Controllable
 
-  A system is controllabe iff \(R = \mathbb{R}^m\).
+  A system is controllabe iff \(R = \mathbb{R}^n\).
 
   That is, any state is reachable given enough time.
 
@@ -1898,7 +1923,7 @@
 
   We can now write:
 
-  \(\vect{x}[\nu] = \bm{A}^nx[\nu] +
+  \(\vect{x}[\nu] = \bm{A}^{\nu}x[0] +
   \mathcal{C}_{\nu}
   \begin{bmatrix} \vect{u}[\nu - 1] \\ \vdots \\ \vect{u}[0] \end{bmatrix}\)
 
